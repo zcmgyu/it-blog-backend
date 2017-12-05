@@ -1,7 +1,7 @@
 package com.example.itblog.service;
 
 import com.example.itblog.exception.ConflictEmailException;
-import com.example.itblog.collection.User;
+import com.example.itblog.model.User;
 import com.example.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,65 +1,53 @@
-package com.example.itblog.collection;
+package com.example.itblog.model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO: REFERENCE
-// TODO: https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations
-@Document(collection = "User")
+@Document(collection = "Users")
 public class User implements UserDetails {
 
     @Id
-    private String id;
+    private long id;
 
-    @NotNull
-    private String name;
-
-    @NotNull
+    @NotEmpty
     private String username;
 
-    @NotNull
+    @NotEmpty
+    @Email
     private String email;
 
-    @NotNull
+    @NotEmpty
     private String password;
 
     private boolean enabled;
 
+    @JsonIgnore
     private List<Role> roles;
 
-    public User() {
-    }
-
     public User(User user) {
-        this.name = user.getName();
-        this.email = user.getEmail();
+        super();
+        this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
+        this.roles = user.getRoles();
         this.enabled = user.isEnabled();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
+
         return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override
@@ -69,11 +57,13 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
+        // we never lock accounts
         return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
+        // credentials never expire
         return true;
     }
 
@@ -82,20 +72,17 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     public void setUsername(String username) {
@@ -110,12 +97,13 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public String getPassword() {
+        return password;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<Role> getRoles() {
@@ -126,4 +114,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

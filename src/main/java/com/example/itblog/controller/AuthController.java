@@ -1,6 +1,6 @@
 package com.example.itblog.controller;
 
-import com.example.itblog.collection.User;
+import com.example.itblog.model.User;
 import com.example.itblog.exception.ConflictEmailException;
 import com.example.itblog.model.*;
 import com.example.itblog.service.UserService;
