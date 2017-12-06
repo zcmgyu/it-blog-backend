@@ -1,23 +1,25 @@
 package com.example.itblog.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "Users")
+@JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
 public class User implements UserDetails {
 
     @Id
-    private long id;
+    private String _id;
 
     @NotEmpty
     private String username;
@@ -29,18 +31,26 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
-    private boolean enabled;
+    private boolean enabled = false;
 
-    @JsonIgnore
-    private List<Role> roles;
+    private List<String> roles;
 
-    public User(User user) {
-        super();
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.roles = user.getRoles();
-        this.enabled = user.isEnabled();
+    @NotEmpty
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createAt;
+
+    @NotEmpty
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date modifiedAt;
+
+    public User(String username, String email, String password, boolean enabled, List<String> roles, Date createAt, Date modifiedAt) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.roles = roles;
+        this.createAt = createAt;
+        this.modifiedAt = modifiedAt;
     }
 
     @Override
@@ -72,12 +82,12 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public long getId() {
-        return id;
+    public String getId() {
+        return _id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(String id) {
+        this._id = id;
     }
 
     @Override
@@ -106,15 +116,31 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

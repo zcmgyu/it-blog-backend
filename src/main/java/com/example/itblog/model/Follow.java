@@ -1,5 +1,6 @@
 package com.example.itblog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,12 +10,14 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "Follow")
+@JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
 public class Follow {
 
     @Id
-    private long id;
+    private String _id;
 
-    private long userId;
+    @NotEmpty
+    private String userId;
 
     private List<String> followed;
 
@@ -28,7 +31,7 @@ public class Follow {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Follow(long userId, List<String> followed, List<String> following, Date createAt, Date modifiedAt) {
+    public Follow(String userId, List<String> followed, List<String> following, Date createAt, Date modifiedAt) {
         this.userId = userId;
         this.followed = followed;
         this.following = following;
@@ -36,7 +39,11 @@ public class Follow {
         this.modifiedAt = modifiedAt;
     }
 
-    public long getUserId() {
+    public String getId() {
+        return _id;
+    }
+
+    public String getUserId() {
         return userId;
     }
 

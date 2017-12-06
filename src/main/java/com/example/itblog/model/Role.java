@@ -6,9 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Document(collection = "Role")
@@ -16,7 +14,7 @@ import java.util.Date;
 public class Role {
 
     @Id
-    private long id;
+    private String _id;
 
     @NotEmpty
     private String roleName;
@@ -35,8 +33,8 @@ public class Role {
         this.modifiedAt = modifiedAt;
     }
 
-    public long getId() {
-        return id;
+    public String getId() {
+        return _id;
     }
 
     public String getRoleName() {

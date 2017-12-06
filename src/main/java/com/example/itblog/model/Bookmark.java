@@ -1,21 +1,24 @@
 package com.example.itblog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "Bookmark")
+@JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
 public class Bookmark {
 
     @Id
-    private long id;
+    private String _id;
 
-    private long userId;
+    private String userId;
 
-    private long[] listPostId;
+    private List<String> listPostId;
 
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -25,30 +28,30 @@ public class Bookmark {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Bookmark(long userId, long[] listPostId, Date createAt, Date modifiedAt) {
+    public Bookmark(String userId, List<String> listPostId, Date createAt, Date modifiedAt) {
         this.userId = userId;
         this.listPostId = listPostId;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
     }
 
-    public long getId() {
-        return id;
+    public String getId() {
+        return _id;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public long[] getListPostId() {
+    public List<String> getListPostId() {
         return listPostId;
     }
 
-    public void setListPostId(long[] listPostId) {
+    public void setListPostId(List<String> listPostId) {
         this.listPostId = listPostId;
     }
 
