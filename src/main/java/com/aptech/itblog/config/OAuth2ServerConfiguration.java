@@ -240,6 +240,7 @@ public class OAuth2ServerConfiguration {
             http
                     .authorizeRequests()
                     .antMatchers("/hello").authenticated()
+                    .antMatchers("/posts").authenticated()
                     .antMatchers("/users").hasRole("ADMIN")
                     .antMatchers("/greeting").authenticated();
         }

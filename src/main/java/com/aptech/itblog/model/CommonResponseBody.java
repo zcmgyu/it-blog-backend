@@ -1,18 +1,15 @@
 package com.aptech.itblog.model;
 
+import java.util.Map;
+
 public class CommonResponseBody {
     private String title;
     private int status;
-    private Object echo;
-    private CommonResult result;
+    private Map<String, Object> result;
 
-    public CommonResponseBody() {
-    }
-
-    public CommonResponseBody(String title, int status, Object echo, CommonResult result) {
+    public CommonResponseBody(String title, int status, Map<String, Object> result) {
         this.title = title;
         this.status = status;
-        this.echo = echo;
         this.result = result;
     }
 
@@ -32,19 +29,11 @@ public class CommonResponseBody {
         this.status = status;
     }
 
-    public Object getEcho() {
-        return echo;
-    }
-
-    public void setEcho(Object echo) {
-        this.echo = echo;
-    }
-
-    public CommonResult getResult() {
+    public Map<String, Object> getResult() {
         return result;
     }
 
-    public void setResult(CommonResult result) {
+    public void setResult(Map<String, Object> result) {
         this.result = result;
     }
 }

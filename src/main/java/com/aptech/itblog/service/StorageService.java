@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 public class StorageService {
 
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private final Path UPLOADED_FOLDER = Paths.get("/Users/japanquality/Desktop/Storage");
+    private final Path UPLOADED_FOLDER = Paths.get("storage");
 
     public void store(MultipartFile file, String filename) {
         try {

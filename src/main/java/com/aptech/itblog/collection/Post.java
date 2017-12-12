@@ -32,13 +32,9 @@ public class Post {
 
     private boolean status;
 
+    private boolean publicPost;
+
     private String categoryId;
-
-    private List<String> comments;
-
-    private List<String> tags;
-
-    private List<String> claps;
 
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -51,16 +47,14 @@ public class Post {
     public Post() {
     }
 
-    public Post(String authorId, String title, String content, String url, boolean status, String categoryId, List<String> comments, List<String> tags, List<String> claps, Date createAt, Date modifiedAt) {
+    public Post(String authorId, String title, String content, String url, boolean status, boolean publicPost, String categoryId, Date createAt, Date modifiedAt) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;
         this.url = url;
         this.status = status;
+        this.publicPost = publicPost;
         this.categoryId = categoryId;
-        this.comments = comments;
-        this.tags = tags;
-        this.claps = claps;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
     }
@@ -113,30 +107,6 @@ public class Post {
         this.status = status;
     }
 
-    public List<String> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<String> comments) {
-        this.comments = comments;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public List<String> getClaps() {
-        return claps;
-    }
-
-    public void setClaps(List<String> claps) {
-        this.claps = claps;
-    }
-
     public Date getCreateAt() {
         return createAt;
     }
@@ -159,5 +129,13 @@ public class Post {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public boolean isPublicPost() {
+        return publicPost;
+    }
+
+    public void setPublicPost(boolean publicPost) {
+        this.publicPost = publicPost;
     }
 }
