@@ -19,7 +19,7 @@ import java.util.List;
 public class Post {
 
     @Id
-    private String _id;
+    private String id;
 
     @NotEmpty
     private String authorId;
@@ -60,11 +60,11 @@ public class Post {
     }
 
     public String get_id() {
-        return _id;
+        return id;
     }
 
     public void set_id(String _id) {
-        this._id = _id;
+        this.id = _id;
     }
 
     public String getAuthorId() {

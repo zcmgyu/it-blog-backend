@@ -13,6 +13,10 @@ public class CommonResponseBody {
         this.result = result;
     }
 
+    public CommonResponseBody(String badRequest, int value, String echo, CommonResult commonResult) {
+
+    }
+
     public String getTitle() {
         return title;
     }

@@ -1,6 +1,6 @@
 package com.aptech.itblog.repository;
 
-import com.aptech.itblog.model.Notification;
+import com.aptech.itblog.collection.Notification;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

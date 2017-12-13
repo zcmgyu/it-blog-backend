@@ -1,6 +1,6 @@
 package com.aptech.itblog.service;
 
-import com.aptech.itblog.model.Role;
+import com.aptech.itblog.collection.Role;
 
 public interface RoleService {
 

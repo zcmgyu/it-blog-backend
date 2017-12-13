@@ -37,22 +37,23 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         super();
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Object echo = "Can't get echo from request";
-        Map requestPrams = request.getParameterMap();
-        if (request.getParameterMap() == null) {
-            echo = requestPrams;
-        }
-        logger.info(echo);
-        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(), "echo",
-                new CommonResult("There is an error in the API call argument.",
-                        ex.getBindingResult()
-                                .getFieldErrors()
-                                .stream()
-                                .collect(Collectors.toMap(x -> x.getField(), x -> x.getDefaultMessage()))));
-        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        Object echo = "Can't get echo from request";
+//        Map requestPrams = request.getParameterMap();
+//        if (request.getParameterMap() == null) {
+//            echo = requestPrams;
+//        }
+//
+//        logger.info(echo);
+//        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(), "echo",
+//                new CommonResult("There is an error in the API call argument.",
+//                        ex.getBindingResult()
+//                                .getFieldErrors()
+//                                .stream()
+//                                .collect(Collectors.toMap(x -> x.getField(), x -> x.getDefaultMessage()))));
+//        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+//    }
 
 
     @ExceptionHandler(value = ConstraintViolationException.class)

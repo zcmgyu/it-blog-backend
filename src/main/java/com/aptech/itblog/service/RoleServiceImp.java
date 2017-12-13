@@ -1,7 +1,7 @@
 package com.aptech.itblog.service;
 
 import com.aptech.itblog.repository.RoleRepository;
-import com.aptech.itblog.model.Role;
+import com.aptech.itblog.collection.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

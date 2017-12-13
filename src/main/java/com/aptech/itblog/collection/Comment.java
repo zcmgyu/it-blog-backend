@@ -20,6 +20,9 @@ public class Comment {
     private String userId;
 
     @NotEmpty
+    private String postId;
+
+    @NotEmpty
     private String content;
 
     private List<String> replyId;
@@ -32,8 +35,12 @@ public class Comment {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Comment(String userId, String content, List<String> replyId, Date createAt, Date modifiedAt) {
+    public Comment() {
+    }
+
+    public Comment(String userId, String postId, String content, List<String> replyId, Date createAt, Date modifiedAt) {
         this.userId = userId;
+        this.postId = postId;
         this.content = content;
         this.replyId = replyId;
         this.createAt = createAt;
@@ -54,6 +61,14 @@ public class Comment {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getContent() {
