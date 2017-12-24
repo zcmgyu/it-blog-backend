@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -21,42 +22,39 @@ public class Post {
     @Id
     private String _id;
 
-    @NotEmpty
     private String authorId;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String content;
 
-    private String url;
+    @NotNull
+    private String categoryId;
+
+    private List<String> tags;
 
     private boolean status;
 
     private boolean publicPost;
 
-    private String categoryId;
-
-    @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
 
-    @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
     public Post() {
     }
 
-    public Post(String authorId, String title, String content, String url, boolean status, boolean publicPost, String categoryId, Date createAt, Date modifiedAt) {
+    public Post(String authorId, String title, String content, boolean publicPost, String categoryId, List<String> tags) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;
-        this.url = url;
-        this.status = status;
         this.publicPost = publicPost;
         this.categoryId = categoryId;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
+        this.tags = tags;
     }
 
     public String get_id() {
@@ -89,14 +87,6 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public boolean isStatus() {
@@ -137,5 +127,13 @@ public class Post {
 
     public void setPublicPost(boolean publicPost) {
         this.publicPost = publicPost;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }

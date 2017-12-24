@@ -16,21 +16,16 @@ public class Category {
     private String _id;
 
     @NotEmpty
-    private String categoryName;
+    private String name;
 
-    @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
 
-    @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Category(String _id, String categoryName, Date createAt, Date modifiedAt) {
-        this._id = _id;
-        this.categoryName = categoryName;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
+    public Category(String name) {
+        this.name = name;
     }
 
     public String get_id() {
@@ -41,12 +36,12 @@ public class Category {
         this._id = _id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getCreateAt() {

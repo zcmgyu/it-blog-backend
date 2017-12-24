@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -18,10 +19,10 @@ import java.util.List;
 // TODO: REFERENCE
 // TODO: https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations
 @Document(collection = "User")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Id
-    private String id;
+    private String _id;
 
     @NotNull
     private String name;
@@ -39,21 +40,28 @@ public class User implements UserDetails {
 
     private List<Role> roles;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createAt;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date modifiedAt;
+
     public User() {
     }
 
     public User(User user) {
+        this._id = user.get_id();
         this.name = user.getName();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.enabled = user.isEnabled();
+        this.roles = user.getRoles();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        return authorities;
+        return roles;
     }
 
     @Override
@@ -86,12 +94,12 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -130,99 +138,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    @Document(collection = "Notification")
-    @JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
-    public static class Notification {
+    public Date getCreateAt() {
+        return createAt;
+    }
 
-        @Id
-        private String _id;
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
 
-        @NotEmpty
-        private String userId;
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
 
-        @NotEmpty
-        private String type;
-
-        @NotEmpty
-        private String targetUserId;
-
-        @NotEmpty
-        private String url;
-
-        @NotEmpty
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        private Date createAt;
-
-        @NotEmpty
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        private Date modifiedAt;
-
-        public Notification() {
-        }
-
-        public Notification(String userId, String type, String targetUserId, String url, Date createAt, Date modifiedAt) {
-            this.userId = userId;
-            this.type = type;
-            this.targetUserId = targetUserId;
-            this.url = url;
-            this.createAt = createAt;
-            this.modifiedAt = modifiedAt;
-        }
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getTargetUserId() {
-            return targetUserId;
-        }
-
-        public void setTargetUserId(String targetUserId) {
-            this.targetUserId = targetUserId;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public Date getCreateAt() {
-            return createAt;
-        }
-
-        public void setCreateAt(Date createAt) {
-            this.createAt = createAt;
-        }
-
-        public Date getModifiedAt() {
-            return modifiedAt;
-        }
-
-        public void setModifiedAt(Date modifiedAt) {
-            this.modifiedAt = modifiedAt;
-        }
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

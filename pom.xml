@@ -49,6 +49,7 @@
         <artifactId>spring-boot-starter-websocket</artifactId>
     </dependency>
 
+
     <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
         <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
@@ -78,7 +79,18 @@
     <!--<artifactId>postgresql</artifactId>-->
     <!--<version>42.1.4</version>-->
     <!--</dependency>-->
-
+    <!-- GOOGLE ANALYSIS-->
+    <dependency>
+        <groupId>com.google.apis</groupId>
+        <artifactId>google-api-services-analyticsreporting</artifactId>
+        <version>v4-rev118-1.23.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client-gson -->
+    <dependency>
+        <groupId>com.google.api-client</groupId>
+        <artifactId>google-api-client-gson</artifactId>
+        <version>1.23.0</version>
+    </dependency>
 
 </dependencies>
 
