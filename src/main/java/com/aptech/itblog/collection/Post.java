@@ -1,12 +1,6 @@
 package com.aptech.itblog.collection;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,7 +22,7 @@ public class Post {
     private String title;
 
     @NotNull
-    private String content;
+    private Object content;
 
     @NotNull
     private String categoryId;
@@ -48,7 +42,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(String authorId, String title, String content, boolean publicPost, String categoryId, List<String> tags) {
+    public Post(String authorId, String title, Object content, boolean publicPost, String categoryId, List<String> tags) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;
@@ -81,11 +75,11 @@ public class Post {
         this.title = title;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 

@@ -1,18 +1,11 @@
 package com.aptech.itblog.config;
 
-import com.aptech.itblog.collection.Category;
-import com.aptech.itblog.collection.User;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 public class DBLoader implements CommandLineRunner {
     @Autowired

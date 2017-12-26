@@ -1,6 +1,5 @@
 package com.aptech.itblog.controller;
 
-import com.aptech.itblog.collection.User;
 import com.aptech.itblog.model.Notification;
 import com.aptech.itblog.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
