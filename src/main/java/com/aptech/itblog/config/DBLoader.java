@@ -1,26 +1,26 @@
 package com.aptech.itblog.config;
 
-import com.aptech.itblog.repository.CategoryRepository;
+// import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.RoleRepository;
-import com.aptech.itblog.repository.UserRepository;
+import com.aptech.itblog.collection.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DBLoader implements CommandLineRunner {
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    // @Autowired
+    // private CategoryRepository categoryRepository;
 
     @Override
     public void run(String... strings) throws Exception {
-//        roleRepository.save(new Role("USER"));
-//        roleRepository.save(new Role("ADMIN"));
+    //    roleRepository.save(new Role("USER"));
+    //    roleRepository.save(new Role("ADMIN"));
 //        User user = new User();
 //        user.setName("Administrator");
 //        user.setPassword(new BCryptPasswordEncoder().encode("admin"));

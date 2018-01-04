@@ -40,7 +40,7 @@ public class OAuth2ServerConfiguration {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/api/post/**").anonymous()
                     .antMatchers("/api/posts").authenticated()
-                    .antMatchers("/api/users").hasRole("ADMIN");
+                    .antMatchers("/api/users").authenticated();
         }
 
     }

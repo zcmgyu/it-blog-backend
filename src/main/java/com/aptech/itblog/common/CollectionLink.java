@@ -7,6 +7,7 @@ public class CollectionLink {
     public static final String POSTS_ID = "/posts/{post_id}";
 
     public static final String USERS = "/users";
+    public static final String USERS_USER_ID = "/users/{user_id}";
 
     public static final String REGISTER = "/register";
 
