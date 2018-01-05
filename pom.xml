@@ -40,6 +40,18 @@
         <groupId>org.springframework.security.oauth</groupId>
         <artifactId>spring-security-oauth2</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>5.0.2.RELEASE</version>
+    </dependency>
+    <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.7</version>
+    </dependency>
+
     <!--<dependency>-->
     <!--<groupId>mysql</groupId>-->
     <!--<artifactId>mysql-connector-java</artifactId>-->
@@ -90,6 +102,11 @@
         <groupId>com.google.api-client</groupId>
         <artifactId>google-api-client-gson</artifactId>
         <version>1.23.0</version>
+    </dependency>
+    <dependency>
+        <groupId>spring-security-oauth2</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
+        <version>1.0</version>
     </dependency>
 
 </dependencies>

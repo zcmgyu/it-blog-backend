@@ -78,7 +78,8 @@ public class PostController {
         if (null == result) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(result, HttpStatus.OK);
+
+            return new ResponseEntity(new CommonResponseBody("OK", 200, result), HttpStatus.OK);
         }
     }
 

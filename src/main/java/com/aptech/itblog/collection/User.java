@@ -33,6 +33,8 @@ public class User implements UserDetails, Serializable {
     @NotNull
     private String password;
 
+    private String resetToken;
+
     private boolean enabled;
 
     private List<Role> roles;
@@ -127,6 +129,14 @@ public class User implements UserDetails, Serializable {
         this.enabled = enabled;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -150,4 +160,5 @@ public class User implements UserDetails, Serializable {
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
 }

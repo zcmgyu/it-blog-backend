@@ -11,6 +11,8 @@ public class CollectionLink {
 
     public static final String REGISTER = "/register";
 
+    public static final String FORGOT_PASSWORD = "/forgot_password";
+    public static final String FORGOT_PASSWORD_RESET = "/forgot_password/reset";
 
     public static final String GET_COMMENT = "/api/comment/{post_id}";
     public static final String CREATE_COMMENT = "/api/comment/{post_id}";
