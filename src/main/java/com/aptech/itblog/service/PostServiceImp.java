@@ -4,6 +4,7 @@ import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.model.Pagination;
 import com.aptech.itblog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,14 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<Post> getListPost(Pagination pagination) {
-        Pageable pageable = new PageRequest(pagination.getPage(), pagination.getSize());
-        return postRepository.findAll(pageable).getContent();
+    public Page<Post> getPagePost(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
+
     @Override
-    public Post getPost(String post_id) {
-        return postRepository.findOne(post_id);
+    public Post getPost(String postId) {
+        return postRepository.findOne(postId);
     }
 
     @Override
@@ -40,14 +41,17 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public boolean deletePost(String post_id) {
-        postRepository.delete(post_id);
+    public boolean deletePost(String postId) {
+        postRepository.delete(postId);
 
-        if (null != getPost(post_id)) {
+        if (null != getPost(postId)) {
             return true;
         }
         return false;
     }
 
-
+    @Override
+    public List<Post> getListPost() {
+        return postRepository.findAll();
+    }
 }

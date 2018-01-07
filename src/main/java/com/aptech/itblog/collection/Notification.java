@@ -13,7 +13,7 @@ import java.util.Date;
 public class Notification {
 
     @Id
-    private String _id;
+    private String id;
 
     @NotEmpty
     private String userId;
@@ -47,12 +47,12 @@ public class Notification {
         this.modifiedAt = modifiedAt;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {

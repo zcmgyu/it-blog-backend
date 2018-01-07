@@ -14,7 +14,7 @@ import java.util.List;
 public class Bookmark {
 
     @Id
-    private String _id;
+    private String id;
 
     private String userId;
 
@@ -36,11 +36,11 @@ public class Bookmark {
     }
 
     public String getId() {
-        return _id;
+        return id;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setUserId(String userId) {

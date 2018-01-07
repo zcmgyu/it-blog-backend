@@ -1,6 +1,7 @@
 package com.aptech.itblog.collection;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,17 +12,20 @@ import javax.validation.constraints.NotNull;
 public class Role implements GrantedAuthority {
     @Id
     private String id;
+
     @NotNull
-    private String name;
+    private String authority;
 
+    public Role() {
+    }
 
-    public Role(String name) {
-        this.name = name;
+    public Role(String authority) {
+        this.authority = authority;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return authority;
     }
 
     // GETTER & SETTER
@@ -34,15 +38,9 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
 }
 
 

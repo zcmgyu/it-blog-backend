@@ -13,7 +13,7 @@ import java.util.Date;
 public class Category {
 
     @Id
-    private String _id;
+    private String id;
 
     @NotEmpty
     private String name;
@@ -24,16 +24,19 @@ public class Category {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
+    public Category() {
+    }
+
     public Category(String name) {
         this.name = name;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

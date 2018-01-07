@@ -1,41 +1,49 @@
-package com.aptech.itblog.config;
-
-// import com.aptech.itblog.repository.CategoryRepository;
-import com.aptech.itblog.repository.RoleRepository;
-import com.aptech.itblog.collection.Role;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
-@Configuration
-public class DBLoader implements CommandLineRunner {
-    // @Autowired
-    // private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    // @Autowired
-    // private CategoryRepository categoryRepository;
-
-    @Override
-    public void run(String... strings) throws Exception {
-    //    roleRepository.save(new Role("USER"));
-    //    roleRepository.save(new Role("ADMIN"));
+//package com.aptech.itblog.config;
+//
+//import com.aptech.itblog.collection.Category;
+//import com.aptech.itblog.collection.User;
+//import com.aptech.itblog.repository.CategoryRepository;
+//import com.aptech.itblog.repository.RoleRepository;
+//import com.aptech.itblog.collection.Role;
+//import com.aptech.itblog.repository.UserRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//@Configuration
+//public class DBLoader implements CommandLineRunner {
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private RoleRepository roleRepository;
+//
+//    @Autowired
+//    private CategoryRepository categoryRepository;
+//
+//    @Override
+//    public void run(String... strings) throws Exception {
+//        roleRepository.save(new Role("USER"));
+//        roleRepository.save(new Role("ADMIN"));
 //        User user = new User();
 //        user.setName("Administrator");
 //        user.setPassword(new BCryptPasswordEncoder().encode("admin"));
 //        user.setUsername("admin");
 //        user.setEnabled(true);
 //        user.setEmail("admin@itblog.com");
-//        user.setRoles(new ArrayList() {
+//        user.setAuthorities(new ArrayList() {
 //            {
-//                add(roleRepository.findByName("ADMIN"));
+//                add(roleRepository.findByAuthority("ADMIN"));
 //            }
 //        });
-
-
+//
+//
 //        userRepository.save(user);
-
+//
 //        List<Category> categoryList = new ArrayList() {
 //            {
 //                add(new Category("Development"));
@@ -46,5 +54,5 @@ public class DBLoader implements CommandLineRunner {
 //        };
 //
 //        categoryRepository.save(categoryList);
-    }
-}
+//    }
+//}

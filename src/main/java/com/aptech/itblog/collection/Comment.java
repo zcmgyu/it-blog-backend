@@ -14,7 +14,7 @@ import java.util.List;
 public class Comment {
 
     @Id
-    private String _id;
+    private String id;
 
     @NotEmpty
     private String userId;
@@ -40,12 +40,12 @@ public class Comment {
         this.modifiedAt = modifiedAt;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {

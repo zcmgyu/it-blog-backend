@@ -4,6 +4,8 @@ import com.aptech.itblog.collection.User;
 import com.aptech.itblog.exception.ConflictEmailException;
 import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +28,7 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user) {
         User registereddUser = userRepository.save(user);
+
         return registereddUser;
     }
 

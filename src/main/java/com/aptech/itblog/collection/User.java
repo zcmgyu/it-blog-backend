@@ -19,7 +19,7 @@ import java.util.List;
 public class User implements UserDetails, Serializable {
 
     @Id
-    private String _id;
+    private String id;
 
     @NotNull
     private String name;
@@ -37,7 +37,7 @@ public class User implements UserDetails, Serializable {
 
     private boolean enabled;
 
-    private List<Role> roles;
+    private List<Role> authorities;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
@@ -49,18 +49,22 @@ public class User implements UserDetails, Serializable {
     }
 
     public User(User user) {
-        this._id = user.get_id();
+        this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.enabled = user.isEnabled();
-        this.roles = user.getRoles();
+        this.authorities = (List<Role>) user.getAuthorities();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return authorities;
+    }
+
+    public void setAuthorities(List<Role> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
@@ -93,12 +97,12 @@ public class User implements UserDetails, Serializable {
         return enabled;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -137,13 +141,13 @@ public class User implements UserDetails, Serializable {
         this.resetToken = resetToken;
     }
 
-    public List<Role> getRoles() {
-        return roles;
-    }
+//    public List<Role> getRoles() {
+//        return roles;
+//    }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
+//    public void setRoles(List<Role> roles) {
+//        this.roles = roles;
+//    }
 
     public Date getCreateAt() {
         return createAt;
