@@ -1,70 +1,107 @@
 package com.aptech.itblog.controller;
 
 import com.aptech.itblog.collection.Post;
+import com.aptech.itblog.collection.User;
+import com.aptech.itblog.model.CommonResponseBody;
+import com.aptech.itblog.model.Pagination;
 import com.aptech.itblog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.aptech.itblog.common.ColectionLink.*;
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import static com.aptech.itblog.common.CollectionLink.*;
 
 @RestController
+@RequestMapping(value = API)
 public class PostController {
-
+    @Autowired
     private PostService postService;
 
-    @Autowired
-    public PostController(PostService _postService) {
-        this.postService = _postService;
-    }
+    @PostMapping(value = POSTS, headers = "Accept=application/json")
+    public ResponseEntity<?> createPost(@Valid @RequestBody Post post) {
+        // Set author id
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        post.setAuthorId(user.get_id());
 
-    @PostMapping(value = CREATE_POST, headers = "Accept=application/json")
-    public ResponseEntity<?> createPost(@RequestBody Post post) {
+        // Set created date
+        post.setCreateAt(new Date());
 
+        // Create post
         boolean result = postService.createPost(post);
-        HttpHeaders httpHeaders = new HttpHeaders();
 
-        if(result){
-            return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+
+        if (result) {
+            // Replace space with hyphen
+            String transliterated = post.getTitle().replaceAll("\\s", "-");
+
+            return new ResponseEntity<>(new CommonResponseBody("OK", 200,
+                    new LinkedHashMap() {
+                        {
+                            put("message", "You created a post successfully");
+                            put("post_id", post.getid());
+                            put("transliterated", transliterated);
+
+                        }
+                    }), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("", HttpStatus.FORBIDDEN);
         }
-
     }
 
-    @GetMapping(value = GET_POST ,headers = "Accept=application/json")
+    @GetMapping(value = POSTS, headers = "Accept=application/json")
+    public ResponseEntity<?> getListPost(@RequestParam(required = false) Pagination pagination) {
+        // Set default value page and size
+        if (pagination == null) {
+            pagination = new Pagination(0, 25);
+        }
+        List<Post> postList = postService.getListPost(pagination);
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new HashMap() {
+            {
+                put("post_list", postList);
+            }
+        }), HttpStatus.OK);
+    }
+
+    @GetMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<Post> getPostByID(@PathVariable("post_id") String post_id) {
 
         Post result = postService.getPost(post_id);
 
-        if(null == result){
-            return new ResponseEntity<> (HttpStatus.NO_CONTENT);
-        }else {
-            return new ResponseEntity<> (result, HttpStatus.OK);
+        if (null == result) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+
+            return new ResponseEntity(new CommonResponseBody("OK", 200, result), HttpStatus.OK);
         }
     }
 
-    @PutMapping(value = EDIT_POST, headers = "Accept=application/json")
-    public ResponseEntity<?> updatePost(@PathVariable("post_id") String post_id ,@RequestBody Post post) {
+    @PutMapping(value = POSTS_ID, headers = "Accept=application/json")
+    public ResponseEntity<?> updatePost(@PathVariable("post_id") String post_id, @RequestBody Post post) {
 
-        post.set_id(post_id);
+        post.setid(post_id);
         boolean result = postService.updatePost(post);
 
-        if(result){
+        if (result) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping(value = DELETE_POST, headers = "Accept=application/json")
+    @DeleteMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<?> deletePost(@PathVariable("post_id") String post_id) {
 
         boolean result = postService.deletePost(post_id);
 
-        if(result){
+        if (result) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

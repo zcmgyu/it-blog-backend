@@ -1,21 +1,20 @@
 package com.aptech.itblog.collection;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-import java.util.List;
-
+@QuerydslPredicate
 @Document(collection = "Post")
-@JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
+@JsonIgnoreProperties(value = {"createdAt", "modifiedAt"}, allowGetters = true)
 public class Post {
 
     @Id
@@ -24,9 +23,9 @@ public class Post {
     @NotEmpty
     private String authorId;
 
-    private String title;
+    private @TextIndexed(weight = 2) String title;
 
-    private String content;
+    private @TextIndexed String content;
 
     private String url;
 
@@ -40,6 +39,7 @@ public class Post {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
 
+
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
@@ -47,7 +47,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(String authorId, String title, String content, String url, boolean status, boolean publicPost, String categoryId, Date createAt, Date modifiedAt) {
+    public Post(String authorId, String title, String content, String url, boolean status, boolean publicPost, String categoryId) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;
@@ -55,15 +55,18 @@ public class Post {
         this.status = status;
         this.publicPost = publicPost;
         this.categoryId = categoryId;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
     }
 
-    public String get_id() {
+    public Post(String authorId, String title) {
+        this.authorId = authorId;
+        this.title = title;
+    }
+
+    public String getid() {
         return id;
     }
 
-    public void set_id(String _id) {
+    public void setid(String _id) {
         this.id = _id;
     }
 

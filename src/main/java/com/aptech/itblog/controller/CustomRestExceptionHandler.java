@@ -20,12 +20,13 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -37,31 +38,39 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         super();
     }
 
-//    @Override
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        Object echo = "Can't get echo from request";
-//        Map requestPrams = request.getParameterMap();
-//        if (request.getParameterMap() == null) {
-//            echo = requestPrams;
-//        }
-//
-//        logger.info(echo);
-//        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(), "echo",
-//                new CommonResult("There is an error in the API call argument.",
-//                        ex.getBindingResult()
-//                                .getFieldErrors()
-//                                .stream()
-//                                .collect(Collectors.toMap(x -> x.getField(), x -> x.getDefaultMessage()))));
-//        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
-//    }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Object echo = "Can't get echo from request";
+        Map requestPrams = request.getParameterMap();
+        if (request.getParameterMap() == null) {
+            echo = requestPrams;
+        }
+        logger.info(echo);
+        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(),
+                new LinkedHashMap() {
+                    {
+                        put("message", "There is an error in the API call argument.");
+                        put("detail", ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .collect(Collectors.toMap(x -> x.getField(), x -> x.getDefaultMessage())));
+                    }
+                }
+        );
+        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+    }
 
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<Object> handleCustomException(Exception ex) {
         logger.info(ex.getCause().getCause().getMessage());
-        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(), "echo",
-                new CommonResult("There is an error in the API call argument.",
-                        ex.getCause().getCause().getMessage()));
+        CommonResponseBody responseBody = new CommonResponseBody("BadRequest", HttpStatus.BAD_REQUEST.value(),
+                new HashMap() {
+                    {
+                        put("result", new CommonResult("There is an error in the API call argument.",
+                                ex.getCause().getCause().getMessage()));
+                    }
+                });
         return new ResponseEntity<Object>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
@@ -134,11 +143,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return new ResponseEntity<Object>("handleNoHandlerFoundException", HttpStatus.BAD_REQUEST);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
-        return new ResponseEntity<Object>("handleAsyncRequestTimeoutException", HttpStatus.BAD_REQUEST);
     }
 
 

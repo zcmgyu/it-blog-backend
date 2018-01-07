@@ -1,23 +1,28 @@
 package com.aptech.itblog.collection;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 // TODO: REFERENCE
 // TODO: https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations
 @Document(collection = "User")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Id
-    private String id;
+    private String _id;
 
     @NotNull
     private String name;
@@ -25,31 +30,54 @@ public class User implements UserDetails {
     @NotNull
     private String username;
 
-    @NotNull
+    @Email
     private String email;
 
     @NotNull
     private String password;
 
+    private String resetToken;
+
     private boolean enabled;
 
+    private boolean locked;
+
     private List<Role> roles;
+
+    @NotEmpty
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createAt;
+
+
+    @NotEmpty
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date modifiedAt;
 
     public User() {
     }
 
     public User(User user) {
+        this._id = user.get_id();
         this.name = user.getName();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.enabled = user.isEnabled();
+		this.roles = user.getRoles();
+        this.locked = user.isLocked();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        return authorities;
+        return roles;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @Override
@@ -69,7 +97,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return locked;
     }
 
     @Override
@@ -82,12 +110,12 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -118,6 +146,14 @@ public class User implements UserDetails {
         this.enabled = enabled;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -126,4 +162,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 }
