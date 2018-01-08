@@ -53,7 +53,7 @@ public class ForgotPasswordController {
             user.setResetToken(UUID.randomUUID().toString());
 
             // Save token to database
-            userService.addUser(user);
+            userService.registerUser(user);
 
 
             // Email message
@@ -114,7 +114,7 @@ public class ForgotPasswordController {
             resetUser.setResetToken(null);
 
             // Save user
-            userService.addUser(resetUser);
+            userService.registerUser(resetUser);
 
             // In order to set a model attribute on a redirect, we must use
             // RedirectAttributes

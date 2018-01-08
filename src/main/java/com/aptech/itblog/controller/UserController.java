@@ -1,7 +1,5 @@
 package com.aptech.itblog.controller;
 
-import com.aptech.itblog.collection.Post;
-import com.aptech.itblog.collection.Role;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.exception.ConflictEmailException;
 import com.aptech.itblog.model.CommonResponseBody;
@@ -15,10 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
@@ -51,7 +47,30 @@ public class UserController {
         // Actual exception handling
     }
 
-    @SuppressWarnings("Duplicates")
+    @GetMapping(value = USERS)
+    public ResponseEntity<?> getUserList(@RequestParam(required = false, defaultValue = "0") Integer page,
+                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
+        // Create pageable
+        Pageable pageable = new PageRequest(page, size);
+        Page<User> userPage = userService.getAllUser(pageable);
+        // Init a headers and add Content-Range
+        HttpHeaders headers = new HttpHeaders() {
+            {
+                add("Access-Control-Expose-Headers", "Content-Range");
+                add("Content-Range", String.valueOf(userPage.getTotalElements()));
+            }
+        };
+
+        return new ResponseEntity<>(
+                new CommonResponseBody("OK", 200,
+                        new LinkedHashMap() {
+                            {
+                                put("data", userPage.getContent());
+                            }
+                        }), headers, HttpStatus.OK);
+
+    }
+
     @PostMapping(value = USERS)
     @ResponseBody
     public ResponseEntity<?> register(@Valid @RequestBody User data) throws MissingServletRequestPartException {
@@ -89,27 +108,8 @@ public class UserController {
                     HttpStatus.CONFLICT);
         }
 
-        // Encode password
-        BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
-        String hashedPassword = passEncoder.encode(data.getPassword());
-        data.setPassword(hashedPassword);
-
-        // Setting roles for user
-        List<Role> roles = new ArrayList() {
-            {
-                add(roleRepository.findByAuthority("USER"));
-            }
-        };
-        data.setAuthorities(roles);
-
-        // Set default enabled
-        data.setEnabled(true);
-
-        // Set created date
-        data.setCreateAt(new Date());
-
         // Save user to DB
-        userService.addUser(data);
+        userService.registerUser(data);
 
         return new ResponseEntity<Object>(new CommonResponseBody("OK", HttpStatus.OK.value(),
                 new HashMap() {
@@ -121,35 +121,11 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @GetMapping(value = USERS)
-    public ResponseEntity<?> getUserList(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
-        // Create pageable
-        Pageable pageable = new PageRequest(page, size);
-        Page<User> userPage = userRepository.findAll(pageable);
-        // Init a headers and add Content-Range
-        HttpHeaders headers = new HttpHeaders() {
-            {
-                add("Access-Control-Expose-Headers", "Content-Range");
-                add("Content-Range", String.valueOf(userPage.getTotalElements()));
-            }
-        };
-
-        return new ResponseEntity<>(
-                new CommonResponseBody("OK", 200,
-                        new LinkedHashMap() {
-                            {
-                                put("data", userPage.getContent());
-                            }
-                        }), headers, HttpStatus.OK);
-
-    }
-
-
     @GetMapping(value = USERS_ID)
     public ResponseEntity<?> getCurrentUser(@PathVariable("id") String userId) {
         // Define user
-        User user = fetchCurrentUser(userId);
+        User user = userService.getUser(userId);
+
 
         return new ResponseEntity<Object>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
@@ -160,20 +136,11 @@ public class UserController {
 
     @PutMapping(value = USERS_ID)
     public ResponseEntity<?> updateUser(@PathVariable("id") String userId, @RequestBody User user) {
-        User currentUser = fetchCurrentUser(userId);
-
-        // Set update properties
-        currentUser.setName(user.getName());
-        currentUser.setEmail(user.getEmail());
-        currentUser.setAuthorities((List<Role>) user.getAuthorities());
-        currentUser.setEnabled(user.isEnabled());
-        currentUser.setModifiedAt(new Date());
-        // Save to DB
-        userRepository.save(currentUser);
+        User currentUser = userService.updateUser(userId, user);
 
         return new ResponseEntity<Object>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("data", currentUser.getId());
+                put("data", currentUser);
             }
         }), HttpStatus.OK);
     }
@@ -181,29 +148,14 @@ public class UserController {
 
     @DeleteMapping(value = USERS_ID)
     public ResponseEntity<?> deleteUser(@PathVariable("id") String userId) {
-        User currentUser = fetchCurrentUser(userId);
-
-        // Set update properties
-        currentUser.setEnabled(false);
-        currentUser.setModifiedAt(new Date());
-        // Save to DB
-        userRepository.save(currentUser);
+        userService.deleteUser(userId);
 
         return new ResponseEntity<Object>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("data", currentUser.getId());
+                put("data", userId);
             }
         }), HttpStatus.OK);
     }
 
-    private User fetchCurrentUser(String userId) {
-        User currentUser;
-        if ("self".equals(userId)) {
-            currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } else {
-            currentUser = userRepository.findById(userId);
-        }
 
-        return currentUser;
-    }
 }

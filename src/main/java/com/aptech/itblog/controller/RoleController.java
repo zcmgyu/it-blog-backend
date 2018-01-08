@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.aptech.itblog.common.CollectionLink.*;
 
@@ -25,7 +27,7 @@ public class RoleController {
 
     @GetMapping(value = ROLES)
     public ResponseEntity<?> getRoleList(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                             @RequestParam(required = false, defaultValue = "25") Integer size) {
+                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
         // Create pageable
         Pageable pageable = new PageRequest(page, size);
         Page<Role> rolePage = roleRepository.findAll(pageable);
@@ -42,6 +44,7 @@ public class RoleController {
                         new LinkedHashMap() {
                             {
                                 put("data", rolePage.getContent());
+                                put("message", "Success to fetch all role.");
                             }
                         }), headers, HttpStatus.OK);
 
@@ -74,8 +77,8 @@ public class RoleController {
     }
 
     @PutMapping(value = ROLES_ID)
-    public ResponseEntity<?> getRole(@PathVariable(value = "id") String roleId,
-                                     @RequestBody Role role) {
+    public ResponseEntity<?> updateRole(@PathVariable(value = "id") String roleId,
+                                        @RequestBody Role role) {
         Role currentRole = roleRepository.findOne(roleId);
         // Set update properties
         currentRole.setAuthority(role.getAuthority());
@@ -94,16 +97,29 @@ public class RoleController {
     }
 
     @GetMapping(value = ROLES_ID)
-    public ResponseEntity<?> updateRole(@PathVariable(value = "id") String roleId) {
-        Role role = roleRepository.findOne(roleId);
+    public ResponseEntity<?> getRole(@PathVariable(value = "id") String roleId) {
+        List<String> roleIdList = Arrays.asList(roleId.split(","));
+        List<Role> roleList = roleRepository.findAllByIdIn(roleIdList);
+        if (roleList != null) {
+            return new ResponseEntity<>(
+                    new CommonResponseBody("OK", 200,
+                            new LinkedHashMap() {
+                                {
+                                    put("message", "Successfully fetched specified role");
+                                    put("data", roleIdList);
+//                                    put("data", roleList);
+                                }
+                            }), HttpStatus.OK);
+        }
         return new ResponseEntity<>(
-                new CommonResponseBody("OK", 200,
+                new CommonResponseBody("NotFound", 404,
                         new LinkedHashMap() {
                             {
-                                put("message", "Successfully fetched specified role");
-                                put("data", role);
+                                put("message", "Can't fetch specified role");
+                                put("data", null);
                             }
-                        }), HttpStatus.OK);
+                        }), HttpStatus.NOT_FOUND);
+
 
     }
 

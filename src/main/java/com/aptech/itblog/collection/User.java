@@ -1,6 +1,10 @@
 package com.aptech.itblog.collection;
 
 
+import com.aptech.itblog.repository.RoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +20,7 @@ import java.util.List;
 // TODO: REFERENCE
 // TODO: https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations
 @Document(collection = "User")
+@Configurable
 public class User implements UserDetails, Serializable {
 
     @Id
@@ -39,6 +44,9 @@ public class User implements UserDetails, Serializable {
 
     private List<Role> authorities;
 
+    // Create for work with Admin-On-Rest
+    private List<String> roles;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
 
@@ -56,6 +64,7 @@ public class User implements UserDetails, Serializable {
         this.password = user.getPassword();
         this.enabled = user.isEnabled();
         this.authorities = (List<Role>) user.getAuthorities();
+        this.roles = user.roles;
     }
 
     @Override
@@ -141,13 +150,13 @@ public class User implements UserDetails, Serializable {
         this.resetToken = resetToken;
     }
 
-//    public List<Role> getRoles() {
-//        return roles;
-//    }
+    public List<String> getRoles() {
+        return roles;
+    }
 
-//    public void setRoles(List<Role> roles) {
-//        this.roles = roles;
-//    }
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public Date getCreateAt() {
         return createAt;
