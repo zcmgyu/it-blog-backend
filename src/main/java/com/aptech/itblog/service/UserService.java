@@ -121,6 +121,27 @@ public class UserService implements UserDetailsService {
         return currentUser;
     }
 
+    /**
+     * Reset password
+     * @param resetUser
+     * @param password
+     * @return
+     */
+    public User updatePassword(User resetUser, String password) {
+        // Set new password
+        // Encode password
+        BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passEncoder.encode(password);
+        resetUser.setPassword(hashedPassword);
+
+        // Set update properties
+        resetUser.setModifiedAt(new Date());
+        // Save to DB
+        userRepository.save(resetUser);
+
+        return resetUser;
+    }
+
 
     /**
      * Delete user

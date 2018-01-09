@@ -62,7 +62,7 @@ public class ForgotPasswordController {
             passwordResetEmail.setTo(user.getEmail());
             passwordResetEmail.setSubject("Password Reset Request");
             passwordResetEmail.setText("To reset your password, click the link below:\n"
-                    + APP_URL + "/reset?token=" + user.getResetToken());
+                    + APP_URL + "/forgot-password/reset?token=" + user.getResetToken());
 
             emailService.sendEmail(passwordResetEmail);
 
@@ -104,17 +104,13 @@ public class ForgotPasswordController {
 
         // This should always be non-null but we check just in case
         if (resetUser != null) {
-            // Set new password
-            // Encode password
-            BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passEncoder.encode(password);
-            resetUser.setPassword(hashedPassword);
+
 
             // Set the reset token to null so it cannot be used again
             resetUser.setResetToken(null);
 
             // Save user
-            userService.registerUser(resetUser);
+            userService.updatePassword(resetUser, password);
 
             // In order to set a model attribute on a redirect, we must use
             // RedirectAttributes
@@ -132,5 +128,7 @@ public class ForgotPasswordController {
             }), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 }
