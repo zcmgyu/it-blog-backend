@@ -6,14 +6,24 @@ import com.aptech.itblog.model.ResetPasswordVM;
 import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.service.EmailService;
 import com.aptech.itblog.service.UserService;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.Properties;
 import java.util.UUID;
 
 import static com.aptech.itblog.common.CollectionLink.API;
@@ -37,7 +47,7 @@ public class ForgotPasswordController {
 
     // Display forgotPassword page
     @RequestMapping(value = FORGOT_PASSWORD, method = RequestMethod.POST)
-    public ResponseEntity<?> sendResetMail(@RequestParam("email") String userEmail) {
+    public ResponseEntity<?> sendResetMail(@RequestParam("email") String userEmail) throws IOException, MessagingException {
         // Lookup user in database by e-mail
         User user = userRepository.findByEmail(userEmail);
 
@@ -55,16 +65,14 @@ public class ForgotPasswordController {
             // Save token to database
             userService.registerUser(user);
 
-
             // Email message
-            SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
-            passwordResetEmail.setFrom("support@demo.com");
-            passwordResetEmail.setTo(user.getEmail());
-            passwordResetEmail.setSubject("Password Reset Request");
-            passwordResetEmail.setText("To reset your password, click the link below:\n"
-                    + APP_URL + "/forgot-password/reset?token=" + user.getResetToken());
-
-            emailService.sendEmail(passwordResetEmail);
+            File htmlFile = new File("src/main/resources/assets/ResetPassword.html");
+            String emailContent = Files.toString(htmlFile, Charsets.UTF_8);
+            String resetUrl = APP_URL + "/forgot-password/reset?token=" + user.getResetToken();
+            emailContent = emailContent.replace("${name}", user.getName());
+            emailContent = emailContent.replace("${url}", resetUrl);
+            // Send to specified email
+            emailService.sendEmail("Reset your password", emailContent, user.getEmail());
 
             // Add success message to view
             return new ResponseEntity(new CommonResponseBody("OK", 200, new LinkedHashMap() {
@@ -128,7 +136,4 @@ public class ForgotPasswordController {
             }), HttpStatus.BAD_REQUEST);
         }
     }
-
-
-
 }

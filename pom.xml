@@ -92,9 +92,11 @@
         <artifactId>json</artifactId>
         <version>20171018</version>
     </dependency>
-
-
-
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>23.6-jre</version>
+    </dependency>
 </dependencies>
 
 <build>
@@ -104,6 +106,12 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
         </plugin>
     </plugins>
+    <!--<resources>-->
+        <!--<resource>-->
+            <!--<filtering>true</filtering>-->
+            <!--<directory>src/main/resources</directory>-->
+        <!--</resource>-->
+    <!--</resources>-->
 </build>
 
 <repositories>
