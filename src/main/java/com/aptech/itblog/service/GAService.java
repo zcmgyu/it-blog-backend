@@ -47,7 +47,7 @@ public class GAService {
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    private AnalyticsReporting initializeAnalyticsReporting() throws GeneralSecurityException, IOException {
+    static private AnalyticsReporting initializeAnalyticsReporting() throws GeneralSecurityException, IOException {
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         GoogleCredential credential = GoogleCredential

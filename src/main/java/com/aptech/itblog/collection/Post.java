@@ -18,11 +18,12 @@ public class Post {
 
     private String authorId;
 
-    @NotNull
     private String title;
 
     @NotNull
     private Object content;
+
+    private String image;
 
     @NotNull
     private String categoryId;
@@ -129,5 +130,13 @@ public class Post {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

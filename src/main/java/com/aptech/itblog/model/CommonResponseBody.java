@@ -1,7 +1,5 @@
 package com.aptech.itblog.model;
 
-import java.util.Map;
-
 public class CommonResponseBody {
     private String title;
     private int status;

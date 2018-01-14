@@ -2,14 +2,9 @@ package com.aptech.itblog.controller;
 
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
-import com.aptech.itblog.model.AdminQuery;
 import com.aptech.itblog.model.CommonResponseBody;
-import com.aptech.itblog.model.Pagination;
 import com.aptech.itblog.service.PostService;
-import com.aptech.itblog.utils.ParseUtils;
-import com.google.gson.JsonObject;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.aptech.itblog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,22 +32,22 @@ public class PostController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setAuthorId(user.getId());
 
-        // Set created date
-        post.setCreateAt(new Date());
-
         // Create post
-        boolean result = postService.createPost(post);
+        Post createdPost = postService.createPost(post);
 
 
-        if (result) {
+        if (createdPost != null) {
+            // String without accent
+            String withoutAccent = StringUtils.removeAccent(createdPost.getTitle());
+
             // Replace space with hyphen
-            String transliterated = post.getTitle().replaceAll("\\s", "-");
+            String transliterated = withoutAccent.replaceAll("\\s", "-");
 
             return new ResponseEntity<>(new CommonResponseBody("OK", 200,
                     new LinkedHashMap() {
                         {
                             put("message", "You created a post successfully");
-                            put("post_id", post.getId());
+                            put("post_id", createdPost.getId());
                             put("transliterated", transliterated);
 
                         }
@@ -62,9 +57,31 @@ public class PostController {
         }
     }
 
+//    @GetMapping(value = POSTS_TYPE, headers = "Accept=application/json")
+//    public ResponseEntity<?> getListPostByType(@RequestParam(required = false, defaultValue = "latest") String type) {
+//        // Create pageable
+//        Pageable pageable = new PageRequest(page, size);
+//
+//        Page<Post> postPage = postRe.(pageable);
+//
+//        HttpHeaders headers = new HttpHeaders() {
+//            {
+//                add("Access-Control-Expose-Headers", "Content-Range");
+//                add("Content-Range", String.valueOf(postPage.getTotalElements()));
+//            }
+//        };
+//
+//        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+//            {
+//                put("data", postPage.getContent());
+//            }
+//        }), headers, HttpStatus.OK);
+//    }
+
     @GetMapping(value = POSTS, headers = "Accept=application/json")
     public ResponseEntity<?> getListPost(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
+                                         @RequestParam(required = false, defaultValue = "25") Integer size,
+                                         @RequestParam(required = false, defaultValue = "latest") String type) {
         // Create pageable
         Pageable pageable = new PageRequest(page, size);
         Page<Post> postPage = postService.getPagePost(pageable);
@@ -88,7 +105,7 @@ public class PostController {
 
         Post result = postService.getPost(postId);
 
-        if (null == result) {
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
 
@@ -96,35 +113,41 @@ public class PostController {
         }
     }
 
-//    , @RequestParam("range") List range, @RequestParam("sort") List sort
-
-    @GetMapping(value = "/posts/test")
-    public ResponseEntity<Post> getPostTest(@RequestParam Map<String, String> query) {
-
-        System.out.println(query.toString());
-
-        Map filter = new JSONObject(query.get("filter")).toMap();
-        List sort = new JSONArray(query.get("sort")).toList();
-        List range = new JSONArray(query.get("range")).toList();
-
-//        sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
-//        List<String> sort = ParseUtils.parseList(query.get("sort"));
-//        List<String> range = ParseUtils.parseList(query.get("range"));
-//        HashMap<String, String> filter = ParseUtils.parseMap(query.get("filter"));
-
-        List<Post> postList = postService.getListPost();
-//        return new ResponseEntity(new CommonResponseBody("OK", 200, postList), HttpStatus.OK);
-        return new ResponseEntity(postList, HttpStatus.OK);
-    }
 
     @PutMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<?> updatePost(@PathVariable("id") String postId, @RequestBody Post post) {
+        // Get current user
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUserId = user.getId();
 
-        post.setId(postId);
-        boolean result = postService.updatePost(post);
+        if (!post.getAuthorId().equals(currentUserId)) {
+            return new ResponseEntity<>(new CommonResponseBody("Forbidden", 403,
+                    new LinkedHashMap() {
+                        {
+                            put("message", "You can only edit posts that you made.");
 
-        if (result) {
-            return new ResponseEntity<>(HttpStatus.OK);
+                        }
+                    }), HttpStatus.FORBIDDEN);
+        }
+
+
+        Post updatedPost = postService.updatePost(postId, post);
+
+        // String without accent
+        String withoutAccent = StringUtils.removeAccent(updatedPost.getTitle());
+        // Replace space with hyphen
+        String transliterated = withoutAccent.replaceAll("\\s", "-");
+
+        if (updatedPost != null) {
+            return new ResponseEntity<>(new CommonResponseBody("OK", 200,
+                    new LinkedHashMap() {
+                        {
+                            put("message", "You updated a post successfully");
+                            put("post_id", updatedPost.getId());
+                            put("transliterated", transliterated);
+
+                        }
+                    }), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -132,6 +155,7 @@ public class PostController {
 
     @DeleteMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<?> deletePost(@PathVariable("id") String postId) {
+
 
         boolean result = postService.deletePost(postId);
 

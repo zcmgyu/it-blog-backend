@@ -1,15 +1,13 @@
 package com.aptech.itblog.config;
 
 import com.aptech.itblog.collection.Category;
-import com.aptech.itblog.collection.User;
 import com.aptech.itblog.repository.CategoryRepository;
+import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.RoleRepository;
-import com.aptech.itblog.collection.Role;
 import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +19,9 @@ public class DBLoader implements CommandLineRunner {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -51,15 +52,15 @@ public class DBLoader implements CommandLineRunner {
 //
 //        userRepository.save(user);
 //
-//        List<Category> categoryList = new ArrayList() {
-//            {
-//                add(new Category("Development"));
-//                add(new Category("Design"));
-//                add(new Category("QA"));
-//                add(new Category("Management"));
-//            }
-//        };
-//        categoryRepository.save(categoryList);
+        List<Category> categoryList = new ArrayList() {
+            {
+                add(new Category("Development"));
+                add(new Category("Design"));
+                add(new Category("QA"));
+                add(new Category("Management"));
+            }
+        };
+        categoryRepository.save(categoryList);
 
 
 //        List<String> ids = new ArrayList() {
@@ -71,5 +72,9 @@ public class DBLoader implements CommandLineRunner {
 //        List<Role> roleList = roleRepository.findAllByIdIn(ids);
 //        System.out.println(roleList);
 
+//        List<Post> posts = postRepository
+//                .findTopByCategoryIdAndPublicPostInOrderByCreateAtDesc("QA", true);
+//
+//        System.out.println(posts);
     }
 }

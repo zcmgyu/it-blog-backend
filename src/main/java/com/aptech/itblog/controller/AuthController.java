@@ -1,29 +1,8 @@
 package com.aptech.itblog.controller;
 
-import com.aptech.itblog.collection.Role;
-import com.aptech.itblog.collection.User;
-import com.aptech.itblog.exception.ConflictEmailException;
-import com.aptech.itblog.model.CommonResponseBody;
-import com.aptech.itblog.repository.RoleRepository;
-import com.aptech.itblog.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.aptech.itblog.common.CollectionLink.API;
-import static com.aptech.itblog.common.CollectionLink.REGISTER;
 
 @RestController
 @RequestMapping(API)

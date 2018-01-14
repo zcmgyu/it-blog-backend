@@ -4,6 +4,7 @@ public class CollectionLink {
 
     public static final String API = "/api";
     public static final String POSTS = "/posts";
+    public static final String POSTS_TYPE = "/posts/{type}";
     public static final String POSTS_ID = "/posts/{id}";
 
     public static final String USERS = "/users";

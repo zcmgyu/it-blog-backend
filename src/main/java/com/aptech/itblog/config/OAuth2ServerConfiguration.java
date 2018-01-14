@@ -38,9 +38,9 @@ public class OAuth2ServerConfiguration {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
-                    .antMatchers("/api/posts").authenticated()
-                    .antMatchers("/api/posts/**").authenticated()
+                    .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
+                    .antMatchers(HttpMethod.PUT,"/api/posts").authenticated()
+//                    .antMatchers("/api/posts/**").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users/**").permitAll()
