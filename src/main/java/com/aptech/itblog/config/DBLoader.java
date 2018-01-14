@@ -52,15 +52,15 @@ public class DBLoader implements CommandLineRunner {
 //
 //        userRepository.save(user);
 //
-        List<Category> categoryList = new ArrayList() {
-            {
-                add(new Category("Development"));
-                add(new Category("Design"));
-                add(new Category("QA"));
-                add(new Category("Management"));
-            }
-        };
-        categoryRepository.save(categoryList);
+//        List<Category> categoryList = new ArrayList() {
+//            {
+//                add(new Category("Development"));
+//                add(new Category("Design"));
+//                add(new Category("QA"));
+//                add(new Category("Management"));
+//            }
+//        };
+//        categoryRepository.save(categoryList);
 
 
 //        List<String> ids = new ArrayList() {

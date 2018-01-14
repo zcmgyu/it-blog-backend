@@ -29,16 +29,16 @@ public class GAService {
         printResponse(response);
     }
 
-//    public static void main(String[] args) {
-//        try {
-//
-//            AnalyticsReporting service = initializeAnalyticsReporting();
-//            GetReportsResponse response = getReport(service);
-//            printResponse(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public static void main(String[] args) {
+        try {
+
+            AnalyticsReporting service = initializeAnalyticsReporting();
+            GetReportsResponse response = getReport(service);
+            printResponse(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Initializes an Analytics Reporting API V4 service object.

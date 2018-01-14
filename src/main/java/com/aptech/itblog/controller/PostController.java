@@ -2,9 +2,13 @@ package com.aptech.itblog.controller;
 
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
+import com.aptech.itblog.converter.PostConverter;
+import com.aptech.itblog.model.PostDTO;
 import com.aptech.itblog.model.CommonResponseBody;
+import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aptech.itblog.common.CollectionLink.*;
 
@@ -25,6 +30,20 @@ import static com.aptech.itblog.common.CollectionLink.*;
 public class PostController {
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private PostConverter postConverter;
+
+    /**
+     * Entity to DTO
+     * http://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
+     *
+     */
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping(value = POSTS, headers = "Accept=application/json")
     public ResponseEntity<?> createPost(@Valid @RequestBody Post post) {
@@ -57,26 +76,29 @@ public class PostController {
         }
     }
 
-//    @GetMapping(value = POSTS_TYPE, headers = "Accept=application/json")
-//    public ResponseEntity<?> getListPostByType(@RequestParam(required = false, defaultValue = "latest") String type) {
-//        // Create pageable
-//        Pageable pageable = new PageRequest(page, size);
-//
-//        Page<Post> postPage = postRe.(pageable);
-//
-//        HttpHeaders headers = new HttpHeaders() {
-//            {
-//                add("Access-Control-Expose-Headers", "Content-Range");
-//                add("Content-Range", String.valueOf(postPage.getTotalElements()));
-//            }
-//        };
-//
-//        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
-//            {
-//                put("data", postPage.getContent());
-//            }
-//        }), headers, HttpStatus.OK);
-//    }
+    @GetMapping(value = POSTS_TOP4, headers = "Accept=application/json")
+    public ResponseEntity<?> getTop4ByCategory() {
+        LinkedHashMap<String, List<Post>> postMap = postService.getTop4ByCategory();
+
+        LinkedHashMap<String, List<PostDTO>> postDTOMap = new LinkedHashMap<>();
+
+
+
+        for (Map.Entry<String, List<Post>> post: postMap.entrySet()) {
+            // convert to DTO
+            List<PostDTO> postDTOList = post.getValue()
+                    .stream()
+                    .map(p -> postConverter.convertToDto(p))
+                    .collect(Collectors.toList());
+            postDTOMap.put(post.getKey(), postDTOList);
+        }
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("data", postDTOMap);
+            }
+        }), HttpStatus.OK);
+    }
 
     @GetMapping(value = POSTS, headers = "Accept=application/json")
     public ResponseEntity<?> getListPost(@RequestParam(required = false, defaultValue = "0") Integer page,
@@ -108,7 +130,6 @@ public class PostController {
         if (result == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-
             return new ResponseEntity(new CommonResponseBody("OK", 200, result), HttpStatus.OK);
         }
     }
@@ -165,5 +186,8 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
 
 }

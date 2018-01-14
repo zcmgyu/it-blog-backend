@@ -23,6 +23,8 @@ public class Post {
     @NotNull
     private Object content;
 
+    private String shortContent;
+
     private String image;
 
     @NotNull
@@ -43,13 +45,14 @@ public class Post {
     public Post() {
     }
 
-    public Post(String authorId, String title, Object content, boolean publicPost, String categoryId, List<String> tags) {
+    public Post(String authorId, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String shortContent) {
         this.authorId = authorId;
         this.title = title;
         this.content = content;
         this.publicPost = publicPost;
         this.categoryId = categoryId;
         this.tags = tags;
+        this.shortContent = shortContent;
     }
 
     public String getId() {
@@ -138,5 +141,13 @@ public class Post {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getShortContent() {
+        return shortContent;
+    }
+
+    public void setShortContent(String shortContent) {
+        this.shortContent = shortContent;
     }
 }

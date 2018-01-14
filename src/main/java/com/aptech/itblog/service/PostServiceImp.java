@@ -1,6 +1,8 @@
 package com.aptech.itblog.service;
 
+import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
+import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public Post createPost(Post post) {
@@ -72,6 +77,9 @@ public class PostServiceImp implements PostService {
         // Set category
         currentPost.setCategoryId(post.getCategoryId());
 
+        // Set short content
+        currentPost.setShortContent(post.getShortContent());
+
         // Get first image
         String image = getFirstImage(blocks);
         currentPost.setImage(image);
@@ -104,8 +112,15 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<Post> getTop4PostByCategory(String category, boolean publicPost) {
-        return postRepository
-                .findTopByCategoryIdAndPublicPostInOrderByCreateAtDesc(category, publicPost);
+    public LinkedHashMap<String, List<Post>> getTop4ByCategory() {
+        List<Category> categoryList = categoryRepository.findAll();
+
+        LinkedHashMap<String, List<Post>> categoryMap = new LinkedHashMap();
+
+        for (Category category: categoryList) {
+            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
+            categoryMap.put(category.getName(), postList);
+        }
+        return categoryMap;
     }
 }

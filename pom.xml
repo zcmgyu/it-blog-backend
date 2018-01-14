@@ -97,6 +97,13 @@
         <artifactId>guava</artifactId>
         <version>23.6-jre</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+    <dependency>
+        <groupId>org.modelmapper</groupId>
+        <artifactId>modelmapper</artifactId>
+        <version>1.1.2</version>
+    </dependency>
+
 </dependencies>
 
 <build>

@@ -1,9 +1,11 @@
 package com.aptech.itblog.service;
 
+import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -12,7 +14,7 @@ public interface PostService {
 
     Page<Post> getPagePost(Pageable pageable);
 
-    List<Post> getTop4PostByCategory(String category, boolean publicPost);
+    LinkedHashMap<String, List<Post>> getTop4ByCategory();
 
     Post getPost(String postId);
 
