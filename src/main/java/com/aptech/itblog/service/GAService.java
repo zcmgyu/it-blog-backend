@@ -21,7 +21,7 @@ public class GAService {
     private static final String APPLICATION_NAME = "IT Blog - Analytics Reporting";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String KEY_FILE_LOCATION = "/client_secrets.json";
-    private static final String VIEW_ID = "166693231";
+    private static final String VIEW_ID = "167869618";
 
     public GAService() throws GeneralSecurityException, IOException {
         AnalyticsReporting service = initializeAnalyticsReporting();
@@ -34,6 +34,8 @@ public class GAService {
 
             AnalyticsReporting service = initializeAnalyticsReporting();
             GetReportsResponse response = getReport(service);
+            Report report = response.getReports().get(0);
+
             printResponse(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,6 +85,8 @@ public class GAService {
                 .setAlias("pageviews");
 
 
+
+
         Dimension pageTitle = new Dimension().setName("ga:pageTitle");
         Dimension pagePath = new Dimension().setName("ga:pagePath");
 
@@ -100,12 +104,15 @@ public class GAService {
         GetReportsRequest getReport = new GetReportsRequest()
                 .setReportRequests(requests);
 
+
         // Call the batchGet method.
         GetReportsResponse response = service.reports().batchGet(getReport).execute();
 
         // Return the response.
         return response;
     }
+
+
 
     /**
      * Parses and prints the Analytics Reporting API V4 response.
@@ -115,6 +122,9 @@ public class GAService {
     private static void printResponse(GetReportsResponse response) {
 
         for (Report report : response.getReports()) {
+            System.out.println("DEBUG");
+            System.out.println(report.getData().getIsDataGolden());
+
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
             List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();

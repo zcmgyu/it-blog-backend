@@ -5,6 +5,9 @@ import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
+import com.aptech.itblog.service.GAService;
+import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
+import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +28,9 @@ public class DBLoader implements CommandLineRunner {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private GAService gaService;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -76,5 +82,9 @@ public class DBLoader implements CommandLineRunner {
 //                .findTopByCategoryIdAndPublicPostInOrderByCreateAtDesc("QA", true);
 //
 //        System.out.println(posts);
+
+//        AnalyticsReporting service = gaService.initializeAnalyticsReporting();
+//        GetReportsResponse response = gaService.getReport(service);
+
     }
 }
