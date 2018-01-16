@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,13 +111,14 @@ public class GAService {
 
         Dimension pageTitle = new Dimension().setName("ga:pageTitle");
         Dimension pagePath = new Dimension().setName("ga:pagePath");
+        Dimension date = new Dimension().setName("ga:date");
 
         // Create the ReportRequest object.
         ReportRequest request = new ReportRequest()
                 .setViewId(VIEW_ID)
                 .setDateRanges(Arrays.asList(dateRange))
                 .setMetrics(Arrays.asList(sessions, pageviews))
-                .setDimensions(Arrays.asList(pageTitle, pagePath));
+                .setDimensions(Arrays.asList(pageTitle, pagePath, date));
 
         ArrayList<ReportRequest> requests = new ArrayList<>();
         requests.add(request);
@@ -165,10 +167,8 @@ public class GAService {
                     switch (dimensionHeaders.get(i)) {
                         case "ga:pageTitle":
                             trend.setTitle(dimensionValue);
-                            break;
                         case "ga:pagePath":
                             trend.setPath(dimensionValue);
-                            break;
                         default:
                             break;
                     }
@@ -200,7 +200,7 @@ public class GAService {
      *
      * @param response An Analytics Reporting API V4 response.
      */
-    private static void printResponse(GetReportsResponse response) {
+    private static void printResponse(GetReportsResponse response) throws ParseException {
         for (Report report : response.getReports()) {
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
@@ -226,8 +226,15 @@ public class GAService {
                     switch (dimensionHeaders.get(i)) {
                         case "ga:pageTitle":
                             trend.setTitle(dimensionValue);
+                            break;
                         case "ga:pagePath":
                             trend.setPath(dimensionValue);
+                            break;
+                        case "ga:date":
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                            System.out.println("DATE-TIME: " + dimensionValue);
+                            trend.setActivedDate(formatter.parse(dimensionValue));
+                            break;
                         default:
                             break;
                     }
@@ -240,9 +247,7 @@ public class GAService {
                         switch (metricHeaders.get(k).getName()) {
                             case "pageviews":
                                 trend.setViews(Long.parseLong(values.getValues().get(k)));
-                                break;
                             default:
-                                break;
                         }
                         System.out.println(metricHeaders.get(k).getName() + ": " + values.getValues().get(k));
                     }
