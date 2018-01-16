@@ -1,32 +1,35 @@
 package com.aptech.itblog.collection;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
+@Document(collection = "Trend")
 public class Trend {
     @Id
     private String id;
 
-    private Date activedDate;
+    private Date activeDate;
 
     private String title;
 
-    private String path;
+    private String postId;
 
     private long views;
 
     public Trend() {
     }
 
-    public Trend(Date activedDate, String title, String path, long views) {
-        this.activedDate = activedDate;
+    public Trend(String title, String postId, long views, Date activeDate) {
         this.title = title;
-        this.path = path;
+        this.postId = postId;
         this.views = views;
+        this.activeDate = activeDate;
     }
 
     // GETTER AND SETTER
+
 
     public String getId() {
         return id;
@@ -36,12 +39,12 @@ public class Trend {
         this.id = id;
     }
 
-    public Date getActivedDate() {
-        return activedDate;
+    public Date getActiveDate() {
+        return activeDate;
     }
 
-    public void setActivedDate(Date activedDate) {
-        this.activedDate = activedDate;
+    public void setActiveDate(Date activeDate) {
+        this.activeDate = activeDate;
     }
 
     public String getTitle() {
@@ -52,12 +55,12 @@ public class Trend {
         this.title = title;
     }
 
-    public String getPath() {
-        return path;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public long getViews() {
