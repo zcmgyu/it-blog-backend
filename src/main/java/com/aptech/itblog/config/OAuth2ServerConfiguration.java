@@ -40,7 +40,6 @@ public class OAuth2ServerConfiguration {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
                     .antMatchers(HttpMethod.PUT,"/api/posts").authenticated()
-//                    .antMatchers("/api/posts/**").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users/**").permitAll()

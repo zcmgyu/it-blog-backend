@@ -1,5 +1,7 @@
 package com.aptech.itblog.service;
 
+import com.aptech.itblog.collection.Trend;
+import com.aptech.itblog.repository.TrendRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -8,39 +10,60 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReportingScopes;
 import com.google.api.services.analyticsreporting.v4.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class GAService {
+    private static final Logger log = LoggerFactory.getLogger(GAService.class);
+
     private static final String APPLICATION_NAME = "IT Blog - Analytics Reporting";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String KEY_FILE_LOCATION = "/client_secrets.json";
-    private static final String VIEW_ID = "167869618";
+    private static final String VIEW_ID = "166693231";
 
-    public GAService() throws GeneralSecurityException, IOException {
-        AnalyticsReporting service = initializeAnalyticsReporting();
-        GetReportsResponse response = getReport(service);
-        printResponse(response);
-    }
+    @Autowired
+    private TrendRepository trendRepository;
+
+//    public GAService() throws GeneralSecurityException, IOException {
+//        AnalyticsReporting service = initializeAnalyticsReporting();
+//        GetReportsResponse response = getReport(service);
+//        printResponse(response);
+//    }
 
     public static void main(String[] args) {
         try {
-
             AnalyticsReporting service = initializeAnalyticsReporting();
             GetReportsResponse response = getReport(service);
-            Report report = response.getReports().get(0);
-
             printResponse(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+    @Scheduled(fixedRate = 20000)
+    public void reportCurrentTime() throws GeneralSecurityException, IOException {
+        AnalyticsReporting service = initializeAnalyticsReporting();
+        GetReportsResponse response = getReport(service);
+
+
+        log.info("The time is now {}", dateFormat.format(new Date()));
+    }
+
 
     /**
      * Initializes an Analytics Reporting API V4 service object.
@@ -85,8 +108,6 @@ public class GAService {
                 .setAlias("pageviews");
 
 
-
-
         Dimension pageTitle = new Dimension().setName("ga:pageTitle");
         Dimension pagePath = new Dimension().setName("ga:pagePath");
 
@@ -113,18 +134,13 @@ public class GAService {
     }
 
 
-
     /**
-     * Parses and prints the Analytics Reporting API V4 response.
+     * Parses and stores the Analytics Reporting API V4 response.
      *
      * @param response An Analytics Reporting API V4 response.
      */
-    private static void printResponse(GetReportsResponse response) {
-
+    private static void storeIntoDB(GetReportsResponse response) {
         for (Report report : response.getReports()) {
-            System.out.println("DEBUG");
-            System.out.println(report.getData().getIsDataGolden());
-
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
             List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
@@ -138,18 +154,101 @@ public class GAService {
             for (ReportRow row : rows) {
                 List<String> dimensions = row.getDimensions();
                 List<DateRangeValues> metrics = row.getMetrics();
+                // Init trend
+                Trend trend = new Trend();
+
 
                 for (int i = 0; i < dimensionHeaders.size() && i < dimensions.size(); i++) {
                     System.out.println(dimensionHeaders.get(i) + ": " + dimensions.get(i));
+
+                    String dimensionValue = dimensions.get(i);
+                    switch (dimensionHeaders.get(i)) {
+                        case "ga:pageTitle":
+                            trend.setTitle(dimensionValue);
+                            break;
+                        case "ga:pagePath":
+                            trend.setPath(dimensionValue);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 for (int j = 0; j < metrics.size(); j++) {
                     System.out.print("Date Range (" + j + "): ");
                     DateRangeValues values = metrics.get(j);
                     for (int k = 0; k < values.getValues().size() && k < metricHeaders.size(); k++) {
+                        switch (metricHeaders.get(k).getName()) {
+                            case "pageviews":
+                                trend.setViews(Long.parseLong(values.getValues().get(k)));
+                                break;
+                            default:
+                                break;
+                        }
                         System.out.println(metricHeaders.get(k).getName() + ": " + values.getValues().get(k));
                     }
                 }
+                System.out.println("====================================================================================");
+                System.out.println("====================================================================================");
+            }
+        }
+    }
+
+
+    /**
+     * Parses and prints the Analytics Reporting API V4 response.
+     *
+     * @param response An Analytics Reporting API V4 response.
+     */
+    private static void printResponse(GetReportsResponse response) {
+        for (Report report : response.getReports()) {
+            ColumnHeader header = report.getColumnHeader();
+            List<String> dimensionHeaders = header.getDimensions();
+            List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
+            List<ReportRow> rows = report.getData().getRows();
+
+            if (rows == null) {
+                System.out.println("No data found for " + VIEW_ID);
+                return;
+            }
+
+            for (ReportRow row : rows) {
+                List<String> dimensions = row.getDimensions();
+                List<DateRangeValues> metrics = row.getMetrics();
+                // Init trend
+                Trend trend = new Trend();
+
+
+                for (int i = 0; i < dimensionHeaders.size() && i < dimensions.size(); i++) {
+                    System.out.println(dimensionHeaders.get(i) + ": " + dimensions.get(i));
+
+                    String dimensionValue = dimensions.get(i);
+                    switch (dimensionHeaders.get(i)) {
+                        case "ga:pageTitle":
+                            trend.setTitle(dimensionValue);
+                        case "ga:pagePath":
+                            trend.setPath(dimensionValue);
+                        default:
+                            break;
+                    }
+                }
+
+                for (int j = 0; j < metrics.size(); j++) {
+                    System.out.print("Date Range (" + j + "): ");
+                    DateRangeValues values = metrics.get(j);
+                    for (int k = 0; k < values.getValues().size() && k < metricHeaders.size(); k++) {
+                        switch (metricHeaders.get(k).getName()) {
+                            case "pageviews":
+                                trend.setViews(Long.parseLong(values.getValues().get(k)));
+                                break;
+                            default:
+                                break;
+                        }
+                        System.out.println(metricHeaders.get(k).getName() + ": " + values.getValues().get(k));
+                    }
+                }
+                System.out.println("====================================================================================");
+                System.out.println("====================================================================================");
             }
         }
     }
