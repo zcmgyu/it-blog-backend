@@ -1,7 +1,5 @@
 package com.aptech.itblog.model;
 
-import javax.validation.constraints.NotNull;
-
 public class UserDTO {
     private String id;
 

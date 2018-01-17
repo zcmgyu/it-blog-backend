@@ -2,8 +2,10 @@ package com.aptech.itblog.service;
 
 import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
+import com.aptech.itblog.model.TrendViews;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
+import com.aptech.itblog.repository.TrendRepsitoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImp implements PostService {
@@ -22,6 +25,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    TrendRepsitoryCustom trendRepsitoryCustom;
 
     @Override
     public Post createPost(Post post) {
@@ -112,7 +118,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public LinkedHashMap<String, List<Post>> getTop4ByCategory() {
+    public LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory() {
         List<Category> categoryList = categoryRepository.findAll();
 
         LinkedHashMap<String, List<Post>> categoryMap = new LinkedHashMap();
@@ -122,5 +128,26 @@ public class PostServiceImp implements PostService {
             categoryMap.put(category.getName(), postList);
         }
         return categoryMap;
+    }
+
+    @Override
+    public LinkedHashMap<String, List<Post>> getTop4TrendingPostByCategory() {
+        // Get list category
+        List<Category> categoryList = categoryRepository.findAll();
+
+        // Get list trend-views
+        List<TrendViews> trendViews = trendRepsitoryCustom.getTopTrend();
+
+        // Get list ids
+        List<String> ids = trendViews.stream().map(TrendViews::getId).collect(Collectors.toList());
+
+        LinkedHashMap<String, List<Post>> categoryPostMap = new LinkedHashMap();
+
+        for (Category category: categoryList) {
+            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
+            categoryPostMap.put(category.getName(), postList);
+        }
+
+        return categoryPostMap;
     }
 }

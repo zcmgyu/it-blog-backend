@@ -40,7 +40,6 @@ public class PostController {
     /**
      * Entity to DTO
      * http://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
-     *
      */
     @Autowired
     private ModelMapper modelMapper;
@@ -76,15 +75,34 @@ public class PostController {
         }
     }
 
-    @GetMapping(value = POSTS_TOP4, headers = "Accept=application/json")
-    public ResponseEntity<?> getTop4ByCategory() {
-        LinkedHashMap<String, List<Post>> postMap = postService.getTop4ByCategory();
+    @GetMapping(value = POSTS_TOP4_TYPE, headers = "Accept=application/json")
+    public ResponseEntity<?> getTop4ByCategory(@PathVariable(value = "type") String type) {
+
+        LinkedHashMap<String, List<Post>> postMap;
+        switch (type) {
+            case "latest": {
+                postMap = postService.getTop4LatestPostByCategory();
+                break;
+            }
+            case "trend": {
+                postMap = postService.getTop4TrendingPostByCategory();
+                break;
+            }
+            default: {
+                postMap = null;
+            }
+        }
+
+        if (postMap == null) {
+            return new ResponseEntity<>(new CommonResponseBody("NotFound", 404, new LinkedHashMap() {
+                {
+                    put("message", "No found any record");
+                }
+            }), HttpStatus.OK);
+        }
 
         LinkedHashMap<String, List<PostDTO>> postDTOMap = new LinkedHashMap<>();
-
-
-
-        for (Map.Entry<String, List<Post>> post: postMap.entrySet()) {
+        for (Map.Entry<String, List<Post>> post : postMap.entrySet()) {
             // convert to DTO
             List<PostDTO> postDTOList = post.getValue()
                     .stream()
@@ -186,8 +204,6 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
 
 }

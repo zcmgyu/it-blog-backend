@@ -1,19 +1,13 @@
 package com.aptech.itblog.config;
 
-import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.service.GAService;
-import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
-import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class DBLoader implements CommandLineRunner {

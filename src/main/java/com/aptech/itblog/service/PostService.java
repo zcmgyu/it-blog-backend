@@ -1,6 +1,5 @@
 package com.aptech.itblog.service;
 
-import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,9 @@ public interface PostService {
 
     Page<Post> getPagePost(Pageable pageable);
 
-    LinkedHashMap<String, List<Post>> getTop4ByCategory();
+    LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory();
+
+    LinkedHashMap<String, List<Post>> getTop4TrendingPostByCategory();
 
     Post getPost(String postId);
 
