@@ -34,7 +34,7 @@ public class GAService {
     private static final String APPLICATION_NAME = "IT Blog - Analytics Reporting";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String KEY_FILE_LOCATION = "/client_secrets.json";
-    private static final String VIEW_ID = "166693231";
+    private static final String VIEW_ID = "168014843";
 
     @Autowired
     private TrendRepository trendRepository;
@@ -54,19 +54,12 @@ public class GAService {
         GetReportsResponse response = getReport(service);
         // Store into DB
         storeIntoDB(response);
-//        Trend trend = new Trend("Title", "/path/", 20L, new Date());
-
-//        trendRepository.save(trend);
     }
-//    public GAService() throws GeneralSecurityException, IOException {
-//        AnalyticsReporting service = initializeAnalyticsReporting();
-//        GetReportsResponse response = getReport(service);
-//        printResponse(response);
-//    }
 
 //    public static void main(String[] args) {
 //        try {
-
+//        AnalyticsReporting service = initializeAnalyticsReporting();
+//        GetReportsResponse response = getReport(service);
 //            printResponse(response);
 //            GAService.class.newInstance().storeIntoDB(response);
 //        } catch (Exception e) {
@@ -74,22 +67,6 @@ public class GAService {
 //        }
 //    }
 //    GetReportsResponse response;
-
-//    public GAService() throws GeneralSecurityException, IOException {
-//        AnalyticsReporting service = initializeAnalyticsReporting();
-//        response = getReport(service);
-//    }
-
-
-//    @Scheduled(fixedRate = 20000)
-//    public void reportCurrentTime() throws GeneralSecurityException, IOException {
-//        AnalyticsReporting service = initializeAnalyticsReporting();
-//        GetReportsResponse response = getReport(service);
-
-//        storeIntoDB(response);
-//
-//
-//    }
 
 
     /**
