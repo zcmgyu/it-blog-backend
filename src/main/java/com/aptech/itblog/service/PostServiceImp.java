@@ -2,19 +2,18 @@ package com.aptech.itblog.service;
 
 import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
+import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.TrendViews;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
+import com.aptech.itblog.repository.PostRepositoryCustom;
 import com.aptech.itblog.repository.TrendRepsitoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +27,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     TrendRepsitoryCustom trendRepsitoryCustom;
+
+    @Autowired
+    PostRepositoryCustom postRepositoryCustom;
 
     @Override
     public Post createPost(Post post) {
@@ -117,17 +119,25 @@ public class PostServiceImp implements PostService {
         return image;
     }
 
+//    @Override
+//    public LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory() {
+//        List<Category> categoryList = categoryRepository.findAll();
+//
+//        LinkedHashMap<String, List<Post>> categoryMap = new LinkedHashMap();
+
+//        for (Category category: categoryList) {
+//            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
+//            categoryMap.put(category.getName(), postList);
+//        }
+//        postRepositoryCustom.getLatestPostGroupByCategory();
+//
+//        return categoryMap;
+//    }
+
+
     @Override
-    public LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory() {
-        List<Category> categoryList = categoryRepository.findAll();
-
-        LinkedHashMap<String, List<Post>> categoryMap = new LinkedHashMap();
-
-        for (Category category: categoryList) {
-            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
-            categoryMap.put(category.getName(), postList);
-        }
-        return categoryMap;
+    public List<PostByCategory> getTop4LatestPostByCategory() {
+        return postRepositoryCustom.getLatestPostGroupByCategory();
     }
 
     @Override
