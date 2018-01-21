@@ -9,6 +9,7 @@ import com.aptech.itblog.model.PostByCategoryDTO;
 import com.aptech.itblog.model.PostDTO;
 import com.aptech.itblog.model.CommonResponseBody;
 import com.aptech.itblog.repository.CategoryRepository;
+import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
@@ -37,6 +38,12 @@ public class PostController {
 
     @Autowired
     private PostConverter postConverter;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Entity to DTO
@@ -122,6 +129,39 @@ public class PostController {
             }
         }), headers, HttpStatus.OK);
     }
+
+    @GetMapping(value = USER_ID_POSTS, headers = "Accept=application/json")
+    public ResponseEntity<?> getPostListByUser(
+            @PathVariable(value = "id") String authorId,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
+        // Create pageable
+        User author = userRepository.findOne(authorId);
+
+
+
+        List<Post> postList1 = postRepository.findAllByAuthor(author);
+
+        List<Post> postList2 = postRepository.findAllByAuthorId(authorId);
+
+        Pageable pageable = new PageRequest(page, size);
+        Page<Post> postPage = postService.getPagePostByAuthorId(authorId, pageable);
+
+        HttpHeaders headers = new HttpHeaders() {
+            {
+                add("Access-Control-Expose-Headers", "Content-Range");
+                add("Content-Range", String.valueOf(postPage.getTotalElements()));
+            }
+        };
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("data", postPage.getContent());
+            }
+        }), headers, HttpStatus.OK);
+    }
+
+
 
     @GetMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<Post> getPostByID(@PathVariable("id") String postId) {

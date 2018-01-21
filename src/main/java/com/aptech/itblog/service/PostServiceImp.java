@@ -60,6 +60,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public Page<Post> getPagePostByAuthorId(String authorId, Pageable pageable) {
+        return postRepository.findAllByAuthorId(authorId, pageable);
+    }
+
+    @Override
     public Post getPost(String postId) {
         return postRepository.findOne(postId);
     }

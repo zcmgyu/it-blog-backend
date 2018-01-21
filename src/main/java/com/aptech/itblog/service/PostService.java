@@ -15,9 +15,13 @@ public interface PostService {
 
     Page<Post> getPagePost(Pageable pageable);
 
+    Page<Post> getPagePostByAuthorId(String userId, Pageable pageable);
+
     List<PostByCategory> getTop4LatestPostByCategory();
 
     List<PostByCategory> getTop4TrendPostByCategory();
+
+
 
     Post getPost(String postId);
 
