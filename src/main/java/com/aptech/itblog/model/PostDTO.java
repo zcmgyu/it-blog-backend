@@ -1,5 +1,7 @@
 package com.aptech.itblog.model;
 
+import java.util.Date;
+
 public class PostDTO {
     private String id;
 
@@ -11,17 +13,21 @@ public class PostDTO {
 
     private String image;
 
-    private UserDTO user;
+    private UserDTO author;
+
+    private Date createAt;
+
+    private Date modifiedAt;
 
     public PostDTO() {}
 
-    public PostDTO(String id, String title, String shortContent, String transliterated, String image, UserDTO user) {
+    public PostDTO(String id, String title, String shortContent, String transliterated, String image, UserDTO author) {
         this.id = id;
         this.title = title;
         this.shortContent = shortContent;
         this.transliterated = transliterated;
         this.image = image;
-        this.user = user;
+        this.author = author;
     }
 
     public String getId() {
@@ -64,11 +70,27 @@ public class PostDTO {
         this.image = image;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public UserDTO getAuthor() {
+        return author;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setAuthor(UserDTO author) {
+        this.author = author;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

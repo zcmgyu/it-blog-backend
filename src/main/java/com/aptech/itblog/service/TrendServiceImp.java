@@ -33,8 +33,8 @@ public class TrendServiceImp implements TrendService {
         Date sevenDaysAgo = calendar.getTime();
 //        List<Trend> trendsBefore = trendRepository.findAllByActiveDateBefore(sevenDaysAgo);
 //        List<Trend> trendsAfter = trendRepository.findAllByActiveDateAfter(sevenDaysAgo);
-        List<TrendViews> trendsCustome = trendRepsitoryCustom.getTopTrend();
+        List<TrendViews> trendsCustom = trendRepsitoryCustom.getTopTrend();
 //        return trendRepository.findAllByActiveDateAfter(sevenDaysAgo);
-         return trendsCustome;
+         return trendsCustom;
     }
 }

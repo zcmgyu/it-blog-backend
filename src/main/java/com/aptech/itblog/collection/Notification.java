@@ -3,6 +3,7 @@ package com.aptech.itblog.collection;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,7 +17,8 @@ public class Notification {
     private String id;
 
     @NotEmpty
-    private String userId;
+    @DBRef
+    private User user;
 
     @NotEmpty
     private String type;
@@ -38,8 +40,8 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(String userId, String type, String targetUserId, String url, Date createAt, Date modifiedAt) {
-        this.userId = userId;
+    public Notification(User user, String type, String targetUserId, String url, Date createAt, Date modifiedAt) {
+        this.user = user;
         this.type = type;
         this.targetUserId = targetUserId;
         this.url = url;
@@ -55,12 +57,12 @@ public class Notification {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getType() {

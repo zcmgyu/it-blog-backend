@@ -1,5 +1,6 @@
 package com.aptech.itblog.collection;
 
+import javafx.geometry.Pos;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,16 +15,16 @@ public class Trend {
 
     private String title;
 
-    private String postId;
+    private Post post;
 
     private long views;
 
     public Trend() {
     }
 
-    public Trend(String title, String postId, long views, Date activeDate) {
+    public Trend(String title, Post post, long views, Date activeDate) {
         this.title = title;
-        this.postId = postId;
+        this.post = post;
         this.views = views;
         this.activeDate = activeDate;
     }
@@ -55,12 +56,12 @@ public class Trend {
         this.title = title;
     }
 
-    public String getPostId() {
-        return postId;
+    public Post getPostId() {
+        return post;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public long getViews() {

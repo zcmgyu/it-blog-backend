@@ -2,7 +2,6 @@ package com.aptech.itblog.collection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,12 +11,13 @@ import java.util.List;
 
 @Document(collection = "Post")
 @JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
-public class Post {
+public class Post_ {
+
     @Id
     private String id;
 
-    @DBRef
-    private User author;
+
+    private String authorId;
 
     private String title;
 
@@ -43,11 +43,11 @@ public class Post {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Post() {
+    public Post_() {
     }
 
-    public Post(User author, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String shortContent) {
-        this.author = author;
+    public Post_(String authorId, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String shortContent) {
+        this.authorId = authorId;
         this.title = title;
         this.content = content;
         this.publicPost = publicPost;
@@ -64,12 +64,12 @@ public class Post {
         this.id = id;
     }
 
-    public User getAuthor() {
-        return author;
+    public String getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public String getTitle() {

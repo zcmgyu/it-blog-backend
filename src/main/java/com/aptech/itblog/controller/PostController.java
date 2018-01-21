@@ -5,9 +5,11 @@ import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.converter.PostConverter;
 import com.aptech.itblog.model.PostByCategory;
+import com.aptech.itblog.model.PostByCategoryDTO;
 import com.aptech.itblog.model.PostDTO;
 import com.aptech.itblog.model.CommonResponseBody;
 import com.aptech.itblog.repository.CategoryRepository;
+import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -34,23 +36,19 @@ public class PostController {
     private PostService postService;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private PostConverter postConverter;
 
     /**
      * Entity to DTO
      * http://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
      */
-    @Autowired
-    private ModelMapper modelMapper;
-
     @PostMapping(value = POSTS, headers = "Accept=application/json")
     public ResponseEntity<?> createPost(@Valid @RequestBody Post post) {
         // Set author id
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        post.setAuthorId(user.getId());
+
+        // Set author
+        post.setAuthor(user);
 
         // Create post
         Post createdPost = postService.createPost(post);
@@ -79,68 +77,26 @@ public class PostController {
 
     @GetMapping(value = POSTS_TOP4_TYPE, headers = "Accept=application/json")
     public ResponseEntity<?> getTop4ByCategory(@PathVariable(value = "type") String type) {
-//        List<Category>  categoryList = categoryRepository.findAll();
+        List<PostByCategory> postByCategories;
 
-//        LinkedHashMap<String, List<Post>> postMap;
-//        switch (type) {
-//            case "latest": {
-//                postMap = postService.getTop4LatestPostByCategory();
-//                break;
-//            }
-//            case "trend": {
-//                postMap = postService.getTop4TrendingPostByCategory();
-//                break;
-//            }
-//            default: {
-//                postMap = null;
-//            }
-//        }
-//
-//        if (postMap == null) {
-//            return new ResponseEntity<>(new CommonResponseBody("NotFound", 404, new LinkedHashMap() {
-//                {
-//                    put("message", "No found any record");
-//                }
-//            }), HttpStatus.OK);
-//        }
-
-        LinkedHashMap<String, List<PostDTO>> postDTOMap = new LinkedHashMap<>();
-//        for (Map.Entry<String, List<Post>> post : postMap.entrySet()) {
-//            // convert to DTO
-//            List<PostDTO> postDTOList = post.getValue()
-//                    .stream()
-//                    .map(p -> postConverter.convertToDto(p))
-//                    .collect(Collectors.toList());
-//            postDTOMap.put(post.getKey(), postDTOList);
-//        }
-
-//        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
-//            {
-//                put("data", postDTOMap);
-//            }
-//        }), HttpStatus.OK);
-
-
-
-        List<PostByCategory> postByCategories = postService.getTop4LatestPostByCategory();
-
-        for (PostByCategory postByCategory: postByCategories) {
-            String categoryId = postByCategory.get_id();
-//            Category category = categoryList
-//                    .stream()
-//                    .filter(cate -> cate.getId().equals(categoryId))
-//                    .findFirst().get();
-//            postByCategory.setCategory(category.getName());
-
-            List<PostDTO> postDTOList = postByCategory.getTop_4()
-                    .stream()
-                    .map(p -> postConverter.convertToDto(p)).collect(Collectors.toList());
-            postDTOMap.put(categoryId, postDTOList);
+        switch (type) {
+            case "trend":
+                postByCategories = postService.getTop4TrendPostByCategory();
+                break;
+            default:
+                postByCategories = postService.getTop4LatestPostByCategory();
+                break;
         }
+
+        // Convert to DTO
+        List<PostByCategoryDTO> postByCategoryDTO = postByCategories
+                .stream()
+                .map(postByCategory -> postConverter.convertToPostByCategoryDTO(postByCategory))
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("data", postByCategories);
+                put("data", postByCategoryDTO);
             }
         }), HttpStatus.OK);
     }
@@ -186,7 +142,7 @@ public class PostController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String currentUserId = user.getId();
 
-        if (!post.getAuthorId().equals(currentUserId)) {
+        if (!post.getAuthor().getId().equals(currentUserId)) {
             return new ResponseEntity<>(new CommonResponseBody("Forbidden", 403,
                     new LinkedHashMap() {
                         {

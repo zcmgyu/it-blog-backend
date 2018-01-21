@@ -15,10 +15,9 @@ public interface PostService {
 
     Page<Post> getPagePost(Pageable pageable);
 
-//    LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory();
     List<PostByCategory> getTop4LatestPostByCategory();
 
-    LinkedHashMap<String, List<Post>> getTop4TrendingPostByCategory();
+    List<PostByCategory> getTop4TrendPostByCategory();
 
     Post getPost(String postId);
 

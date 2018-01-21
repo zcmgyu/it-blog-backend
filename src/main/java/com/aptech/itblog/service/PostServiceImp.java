@@ -59,7 +59,6 @@ public class PostServiceImp implements PostService {
         return postRepository.findAll(pageable);
     }
 
-
     @Override
     public Post getPost(String postId) {
         return postRepository.findOne(postId);
@@ -119,45 +118,15 @@ public class PostServiceImp implements PostService {
         return image;
     }
 
-//    @Override
-//    public LinkedHashMap<String, List<Post>> getTop4LatestPostByCategory() {
-//        List<Category> categoryList = categoryRepository.findAll();
-//
-//        LinkedHashMap<String, List<Post>> categoryMap = new LinkedHashMap();
 
-//        for (Category category: categoryList) {
-//            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
-//            categoryMap.put(category.getName(), postList);
-//        }
-//        postRepositoryCustom.getLatestPostGroupByCategory();
-//
-//        return categoryMap;
-//    }
-
+    @Override
+    public List<PostByCategory> getTop4TrendPostByCategory() {
+        return postRepositoryCustom.getTrendPostGroupByCategory();
+    }
 
     @Override
     public List<PostByCategory> getTop4LatestPostByCategory() {
         return postRepositoryCustom.getLatestPostGroupByCategory();
     }
 
-    @Override
-    public LinkedHashMap<String, List<Post>> getTop4TrendingPostByCategory() {
-        // Get list category
-        List<Category> categoryList = categoryRepository.findAll();
-
-        // Get list trend-views
-        List<TrendViews> trendViews = trendRepsitoryCustom.getTopTrend();
-
-        // Get list ids
-        List<String> ids = trendViews.stream().map(TrendViews::getId).collect(Collectors.toList());
-
-        LinkedHashMap<String, List<Post>> categoryPostMap = new LinkedHashMap();
-
-        for (Category category: categoryList) {
-            List<Post> postList = postRepository.findTop4ByCategoryIdAndPublicPostInOrderByCreateAtDesc(category.getId(), true);
-            categoryPostMap.put(category.getName(), postList);
-        }
-
-        return categoryPostMap;
-    }
 }

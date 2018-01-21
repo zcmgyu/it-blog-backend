@@ -9,4 +9,6 @@ import java.util.Map;
 
 public interface PostRepositoryCustom {
     List<PostByCategory> getLatestPostGroupByCategory();
+
+    List<PostByCategory> getTrendPostGroupByCategory();
 }

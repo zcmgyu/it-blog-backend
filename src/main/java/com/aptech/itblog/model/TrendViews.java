@@ -1,9 +1,12 @@
 package com.aptech.itblog.model;
 
 public class TrendViews{
-    String id;
+    private String id;
 
-    String views;
+    private String views;
+
+    public TrendViews() {
+    }
 
     public String getId() {
         return id;

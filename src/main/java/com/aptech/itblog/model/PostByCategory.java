@@ -1,23 +1,17 @@
 package com.aptech.itblog.model;
 
+import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
+import com.mongodb.DBObject;
 
 import java.util.List;
 
 public class PostByCategory {
     private String _id;
 
-    private String category;
-
-    private List<Post> top_4;
+    private List<Post> top4;
 
     public PostByCategory() {
-    }
-
-    public PostByCategory(String _id, String category, List<Post> top_4) {
-        this._id = _id;
-        this.category = category;
-        this.top_4 = top_4;
     }
 
     public String get_id() {
@@ -28,19 +22,11 @@ public class PostByCategory {
         this._id = _id;
     }
 
-    public String getCategory() {
-        return category;
+    public List<Post> getTop4() {
+        return top4;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public List<Post> getTop_4() {
-        return top_4;
-    }
-
-    public void setTop_4(List<Post> top_4) {
-        this.top_4 = top_4;
+    public void setTop4(List<Post> top4) {
+        this.top4 = top4;
     }
 }

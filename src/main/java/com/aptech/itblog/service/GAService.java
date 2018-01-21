@@ -1,6 +1,8 @@
 package com.aptech.itblog.service;
 
+import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.Trend;
+import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.TrendRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -38,6 +40,9 @@ public class GAService {
 
     @Autowired
     private TrendRepository trendRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
 
     AnalyticsReporting service;
@@ -164,7 +169,7 @@ public class GAService {
                 List<DateRangeValues> metrics = row.getMetrics();
                 // Init trend
                 String title = null;
-                String postId = null;
+                Post post = null;
                 Long views = null;
                 Date activeDate = null;
 
@@ -177,7 +182,8 @@ public class GAService {
                             title = dimensionValue;
                             break;
                         case "ga:pagePath":
-                            postId = getPostIdFromUri(dimensionValue);
+                            String postId = getPostIdFromUri(dimensionValue);
+                            post = postRepository.findOne(postId);
                             break;
                         case "ga:date":
                             activeDate = formatter.parse(dimensionValue);
@@ -194,7 +200,6 @@ public class GAService {
                         switch (metricHeaders.get(k).getName()) {
                             case "pageviews":
                                 views = Long.parseLong(values.getValues().get(k));
-//                                trend.setViews(Long.parseLong(values.getValues().get(k)));
                                 break;
                             default:
                                 break;
@@ -203,11 +208,11 @@ public class GAService {
                     }
                 }
 
-                if (title == null || postId == null || views == null || activeDate == null) {
+                if (title == null || post == null || views == null || activeDate == null) {
                     continue;
                 }
                 // Add trend to list
-                trends.add(new Trend(title, postId, views, activeDate));
+                trends.add(new Trend(title, post, views, activeDate));
                 System.out.println("====================================================================================");
                 System.out.println("====================================================================================");
 
