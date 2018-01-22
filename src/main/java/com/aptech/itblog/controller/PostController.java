@@ -130,36 +130,7 @@ public class PostController {
         }), headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = USER_ID_POSTS, headers = "Accept=application/json")
-    public ResponseEntity<?> getPostListByUser(
-            @PathVariable(value = "id") String authorId,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-                                         @RequestParam(required = false, defaultValue = "25") Integer size) {
-        // Create pageable
-        User author = userRepository.findOne(authorId);
 
-
-
-        List<Post> postList1 = postRepository.findAllByAuthor(author);
-
-        List<Post> postList2 = postRepository.findAllByAuthorId(authorId);
-
-        Pageable pageable = new PageRequest(page, size);
-        Page<Post> postPage = postService.getPagePostByAuthorId(authorId, pageable);
-
-        HttpHeaders headers = new HttpHeaders() {
-            {
-                add("Access-Control-Expose-Headers", "Content-Range");
-                add("Content-Range", String.valueOf(postPage.getTotalElements()));
-            }
-        };
-
-        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
-            {
-                put("data", postPage.getContent());
-            }
-        }), headers, HttpStatus.OK);
-    }
 
 
 

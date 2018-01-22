@@ -3,6 +3,7 @@ package com.aptech.itblog.collection;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,11 +18,14 @@ public class Follow {
     private String id;
 
     @NotEmpty
-    private String userId;
+    @DBRef
+    private User user;
 
-    private List<String> followed;
+    @DBRef
+    private List<User> following;
 
-    private List<String> following;
+//    @DBRef
+//    private List<User> followers;
 
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -34,13 +38,18 @@ public class Follow {
     public Follow() {
     }
 
-    public Follow(String userId, List<String> followed, List<String> following, Date createAt, Date modifiedAt) {
-        this.userId = userId;
-        this.followed = followed;
+    public Follow(User user, List<User> following) {
+        this.user = user;
         this.following = following;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
     }
+
+    //    public Follow(User user, List<User> following, List<User> followers) {
+//        this.user = user;
+//        this.following = following;
+//        this.followers = followers;
+//    }
+
+    // GETTER & SETTER
 
     public String getId() {
         return id;
@@ -50,29 +59,29 @@ public class Follow {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public List<String> getFollowed() {
-        return followed;
-    }
-
-    public void setFollowed(List<String> followed) {
-        this.followed = followed;
-    }
-
-    public List<String> getFollowing() {
+    public List<User> getFollowing() {
         return following;
     }
 
-    public void setFollowing(List<String> following) {
+    public void setFollowing(List<User> following) {
         this.following = following;
     }
+
+//    public List<User> getFollowers() {
+//        return followers;
+//    }
+//
+//    public void setFollowers(List<User> followers) {
+//        this.followers = followers;
+//    }
 
     public Date getCreateAt() {
         return createAt;

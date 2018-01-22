@@ -4,7 +4,7 @@ public class CollectionLink {
 
     public static final String API = "/api";
     public static final String POSTS = "/posts";
-    public static final String USER_ID_POSTS = "/users/{id}/posts";
+    public static final String USERS_ID_POSTS = "/users/{id}/posts";
     public static final String POSTS_TOP4_TYPE = "/posts/top4/{type}";
     public static final String POSTS_TYPE = "/posts/{type}";
     public static final String POSTS_ID = "/posts/{id}";
@@ -14,6 +14,8 @@ public class CollectionLink {
 
     public static final String CATEGORIES = "/categories";
     public static final String CATEGORIES_ID = "/categories/{id}";
+
+    public static final String FOLLOW_USER_ID = "/follow/{user_id}";
 
     public static final String ROLES = "/roles";
     public static final String ROLES_ID = "/roles/{id}";

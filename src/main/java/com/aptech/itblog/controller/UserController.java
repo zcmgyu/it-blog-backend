@@ -1,10 +1,14 @@
 package com.aptech.itblog.controller;
 
+import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
+import com.aptech.itblog.converter.PostConverter;
 import com.aptech.itblog.exception.ConflictEmailException;
 import com.aptech.itblog.model.CommonResponseBody;
+import com.aptech.itblog.model.PostDTO;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
+import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +43,13 @@ public class UserController {
 
     @Autowired
     RoleRepository roleRepository;
+
+
+    @Autowired
+    PostService postService;
+
+    @Autowired
+    PostConverter postConverter;
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public void handleMissingParams(MissingServletRequestParameterException ex) {
@@ -156,6 +167,33 @@ public class UserController {
             }
         }), HttpStatus.OK);
     }
+
+
+    @GetMapping(value = USERS_ID_POSTS, headers = "Accept=application/json")
+    public ResponseEntity<?> getPostListByUser(
+            @PathVariable(value = "id") String authorId,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "25") Integer size) {
+        // Create pageable
+        Pageable pageable = new PageRequest(page, size);
+        Page<Post> postPage = postService.getPagePostByAuthorId(authorId, pageable);
+
+        Page<PostDTO> postDTOPage = postPage.map(post -> postConverter.convertToDto(post));
+
+        HttpHeaders headers = new HttpHeaders() {
+            {
+                add("Access-Control-Expose-Headers", "Content-Range");
+                add("Content-Range", String.valueOf(postDTOPage.getTotalElements()));
+            }
+        };
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("data", postDTOPage.getContent());
+            }
+        }), headers, HttpStatus.OK);
+    }
+
 
 
 }
