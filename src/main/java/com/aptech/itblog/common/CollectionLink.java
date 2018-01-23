@@ -22,9 +22,11 @@ public final class CollectionLink {
     public static final String FORGOT_PASSWORD = "/forgot_password";
     public static final String FORGOT_PASSWORD_RESET = "/forgot_password/reset";
 
-    public static final String GET_COMMENT = "/api/comment/{post_id}";
-    public static final String CREATE_COMMENT = "/api/comment/{post_id}";
-    public static final String EDIT_COMMENT = "/api/comment/{comment_id}";
+    public static final String GET_COMMENT = "/comment/{comment_id}";
+    public static final String CREATE_COMMENT = "/comment/{comment_id}";
+    public static final String CREATE_REPLY = "/comment/reply/{comment_id}";
+    public static final String EDIT_COMMENT = "/comment/{comment_id}";
+    public static final String DELETE_COMMENT = "/comment/{comment_id}";
 
     private CollectionLink() {
         throw new AssertionError();

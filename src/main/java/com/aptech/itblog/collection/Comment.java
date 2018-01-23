@@ -22,6 +22,10 @@ public class Comment {
     @NotEmpty
     private String postId;
 
+    private boolean isComment;
+
+    private boolean isCommentDelete;
+
     @NotEmpty
     private String content;
 
@@ -38,13 +42,29 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String userId, String postId, String content, List<String> replyId, Date createAt, Date modifiedAt) {
+    public Comment(String userId, String postId, boolean isComment, String content, List<String> replyId) {
         this.userId = userId;
         this.postId = postId;
+        this.isComment = isComment;
         this.content = content;
         this.replyId = replyId;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
+        this.isCommentDelete = false;
+    }
+
+    public boolean isCommentDelete() {
+        return isCommentDelete;
+    }
+
+    public void setCommentDelete(boolean commentDelete) {
+        isCommentDelete = commentDelete;
+    }
+
+    public boolean isComment() {
+        return isComment;
+    }
+
+    public void setComment(boolean comment) {
+        isComment = comment;
     }
 
     public String get_id() {

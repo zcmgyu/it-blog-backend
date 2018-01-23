@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Collection;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 public class PostCustomRepositoryImp implements PostCustomRepository {
 
     @Autowired
@@ -18,18 +20,19 @@ public class PostCustomRepositoryImp implements PostCustomRepository {
     @Override
     public Collection<Post> searchPost(String text) {
         return mongoTemplate.find(Query.query(new Criteria()
-                .orOperator(Criteria.where("title").regex(text, "i"),
-                        Criteria.where("content").regex(text, "i"))
+                .andOperator(where("title").regex(text),
+                        where("content").regex(text))
         ), Post.class);
     }
 
     @Override
     public Collection<Post> searchbycategory(String categoryText) {
-        Category category = mongoTemplate.findOne(Query.query(new Criteria()
-                .orOperator(Criteria.where("categoryName").regex(categoryText, "i"))
+
+        Category category = mongoTemplate.findOne(Query.query(Criteria.where("categoryName").regex(categoryText)
         ), Category.class);
+
         return mongoTemplate.find(Query.query(new Criteria()
-                .orOperator(Criteria.where("categoryId").regex(category.get_id(), "i"))
+                .andOperator(where("categoryId").regex(category.get_id()))
         ), Post.class);
     }
 }
