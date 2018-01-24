@@ -11,7 +11,7 @@ import java.util.List;
 public interface PostRepository extends MongoRepository<Post, String> {
     Page<Post> findAllByAuthorId(String authorId, Pageable pageable);
 
-    List<Post> findAllByAuthorId(String authorId);
+    Page<Post> findAllByTitleOrRawContentContains(String search1, String search2, Pageable pageable);
 
-    List<Post> findAllByAuthor(User author);
+    Page<Post> findAllByTagsContains(String tag, Pageable pageable);
 }

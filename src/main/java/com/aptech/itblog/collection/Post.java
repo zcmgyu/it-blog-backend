@@ -24,7 +24,7 @@ public class Post {
     @NotNull
     private Object content;
 
-    private String shortContent;
+    private String rawContent;
 
     private String image;
 
@@ -46,14 +46,14 @@ public class Post {
     public Post() {
     }
 
-    public Post(User author, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String shortContent) {
+    public Post(User author, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String rawContent) {
         this.author = author;
         this.title = title;
         this.content = content;
         this.publicPost = publicPost;
         this.categoryId = categoryId;
         this.tags = tags;
-        this.shortContent = shortContent;
+        this.rawContent = rawContent;
     }
 
     public String getId() {
@@ -144,11 +144,11 @@ public class Post {
         this.image = image;
     }
 
-    public String getShortContent() {
-        return shortContent;
+    public String getRawContent() {
+        return rawContent;
     }
 
-    public void setShortContent(String shortContent) {
-        this.shortContent = shortContent;
+    public void getRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 }

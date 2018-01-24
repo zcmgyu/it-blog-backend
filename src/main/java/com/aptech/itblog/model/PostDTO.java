@@ -7,7 +7,7 @@ public class PostDTO {
 
     private String title;
 
-    private String shortContent;
+    private String rawContent;
 
     private String transliterated;
 
@@ -21,10 +21,10 @@ public class PostDTO {
 
     public PostDTO() {}
 
-    public PostDTO(String id, String title, String shortContent, String transliterated, String image, UserDTO author) {
+    public PostDTO(String id, String title, String rawContent, String transliterated, String image, UserDTO author) {
         this.id = id;
         this.title = title;
-        this.shortContent = shortContent;
+        this.rawContent = rawContent;
         this.transliterated = transliterated;
         this.image = image;
         this.author = author;
@@ -46,12 +46,12 @@ public class PostDTO {
         this.title = title;
     }
 
-    public String getShortContent() {
-        return shortContent;
+    public String getRawContent() {
+        return rawContent;
     }
 
-    public void setShortContent(String shortContent) {
-        this.shortContent = shortContent;
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     public String getTransliterated() {

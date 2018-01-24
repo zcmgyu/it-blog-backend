@@ -2,6 +2,7 @@ package com.aptech.itblog.service;
 
 import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
+import com.aptech.itblog.collection.User;
 import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.TrendViews;
 import com.aptech.itblog.repository.CategoryRepository;
@@ -11,6 +12,7 @@ import com.aptech.itblog.repository.TrendRepsitoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,6 +35,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Post createPost(Post post) {
+        // Set author id
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Set author
+        post.setAuthor(user);
+
         LinkedHashMap<String, ArrayList> content = (LinkedHashMap) post.getContent();
         ArrayList<LinkedHashMap<String, String>> blocks = content.get("blocks");
 
@@ -88,9 +96,6 @@ public class PostServiceImp implements PostService {
 
         // Set category
         currentPost.setCategoryId(post.getCategoryId());
-
-        // Set short content
-        currentPost.setShortContent(post.getShortContent());
 
         // Get first image
         String image = getFirstImage(blocks);
