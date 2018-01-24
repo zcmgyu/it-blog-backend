@@ -86,21 +86,21 @@ public class DBLoader implements CommandLineRunner {
 //        GetReportsResponse response = gaService.getReport(service);
 
 
-        User user1 = userRepository.findById("5a5370ad9cbe8bc92ff5c25f");
-        User user2 = userRepository.findById("5a53a7a29cbe8be541a66e2a");
-        User user3 = userRepository.findById("5a53b40f9cbe8bebf3adc11c");
-        User user4 = userRepository.findById("5a53c4699cbe8bebf3adc11d");
-
-        Follow follow1 = followRepository.save(new Follow(user1, Arrays.asList(new User[]{user2, user3})));
-        Follow follow2 = followRepository.save(new Follow(user4, Arrays.asList(new User[]{user3})));
-
-
-        followRepository.save(follow1);
-        followRepository.save(follow2);
-
-        List<Follow> followFound1 = followRepository.findByFollowingIn(Arrays.asList(new User[]{user3}));
-        List<Follow> followFound2 = followRepository.findByFollowingIn(Arrays.asList(new User[]{user2}));
-        List<Follow> followFound3 = followRepository.findByFollowing(user3);
-        List<Follow> followFound4 = followRepository.findByFollowing(user2);
+//        User user1 = userRepository.findById("5a5370ad9cbe8bc92ff5c25f");
+//        User user2 = userRepository.findById("5a53a7a29cbe8be541a66e2a");
+//        User user3 = userRepository.findById("5a53b40f9cbe8bebf3adc11c");
+//        User user4 = userRepository.findById("5a53c4699cbe8bebf3adc11d");
+//
+//        Follow follow1 = followRepository.save(new Follow(user1, Arrays.asList(new User[]{user2, user3})));
+//        Follow follow2 = followRepository.save(new Follow(user4, Arrays.asList(new User[]{user3})));
+//
+//
+//        followRepository.save(follow1);
+//        followRepository.save(follow2);
+//
+//        List<Follow> followFound1 = followRepository.findByFollowingIn(Arrays.asList(new User[]{user3}));
+//        List<Follow> followFound2 = followRepository.findByFollowingIn(Arrays.asList(new User[]{user2}));
+//        List<Follow> followFound3 = followRepository.findByFollowing(user3);
+//        List<Follow> followFound4 = followRepository.findByFollowing(user2);
     }
 }

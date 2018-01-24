@@ -1,22 +1,28 @@
 package com.aptech.itblog.controller;
 
+import com.aptech.itblog.collection.Follow;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.converter.PostConverter;
+import com.aptech.itblog.converter.UserConverter;
 import com.aptech.itblog.exception.ConflictEmailException;
 import com.aptech.itblog.model.CommonResponseBody;
 import com.aptech.itblog.model.PostDTO;
+import com.aptech.itblog.model.UserDTO;
+import com.aptech.itblog.repository.FollowRepository;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -25,6 +31,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aptech.itblog.common.CollectionLink.*;
 
@@ -44,12 +51,17 @@ public class UserController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    FollowRepository followRepository;
 
     @Autowired
     PostService postService;
 
     @Autowired
     PostConverter postConverter;
+
+    @Autowired
+    UserConverter userConverter;
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public void handleMissingParams(MissingServletRequestParameterException ex) {
@@ -194,6 +206,140 @@ public class UserController {
         }), headers, HttpStatus.OK);
     }
 
+    @GetMapping(value = USERS_ID_FOLLOWING)
+    public ResponseEntity<?> getFollowingListByUser(
+            @PathVariable(value = "id") String userId,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "25") Integer size
+    ) {
 
 
+        Follow follow = followRepository.findByUserId(userId);
+
+        if (follow == null) {
+            return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+                {
+                    put("message", "There are no data.");
+                }
+            }), HttpStatus.OK);
+        }
+
+        List<User> followingList = follow.getFollowing();
+
+        // Create pageable
+        Pageable pageable = new PageRequest(page, size);
+        Page<User> followingPage = new PageImpl<>(followingList, pageable, followingList.size());
+
+        Page<UserDTO> userDTOPage = followingPage
+                .map(user -> userConverter.convertToDto(user));
+
+        HttpHeaders headers = getHeaders(userDTOPage);
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("data", userDTOPage.getContent());
+            }
+        }), headers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = USERS_ID_FOLLOWERS)
+    public ResponseEntity<?> getFollowerListByUser(
+            @PathVariable(value = "id") String userId,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "25") Integer size
+    ) {
+        // Create pageable
+        Pageable pageable = new PageRequest(page, size);
+        // Create User
+        User user = new User();
+        user.setId(userId);
+
+        // Pagination
+        Page<Follow> followerPage = followRepository.findAllByFollowing(user, pageable);
+
+        // Follower list
+        Page<User> userPage = followerPage.map(follow -> follow.getUser());
+
+        // Convert to DTO
+        Page<UserDTO> userDTOPage = userPage.map(user1 -> userConverter.convertToDto(user1));
+
+        HttpHeaders headers = getHeaders(userDTOPage);
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("data", userDTOPage.getContent());
+            }
+        }), headers, HttpStatus.OK);
+    }
+
+
+    @PutMapping(value = USERS_ID_FOLLOW)
+    public ResponseEntity<?> followUser(
+            @PathVariable(value = "id") String targetUserId
+    ) {
+        // Create User
+        // Set author id
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Follow follow = followRepository.findByUserId(currentUser.getId());
+
+        // TargetUser
+        User targetUser = userRepository.findById(targetUserId);
+
+        if (follow == null) {
+            follow = new Follow(targetUser, new ArrayList() {
+                {
+                    add(targetUser);
+                }
+            });
+        } else {
+            // Pagination
+            List<User> followingList = follow.getFollowing();
+            followingList.add(targetUser);
+        }
+
+        // Save to DB
+        followRepository.save(follow);
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("message", "You are following " + targetUser.getName());
+            }
+        }), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = USERS_ID_FOLLOW)
+    public ResponseEntity<?> unfollowUser(
+            @PathVariable(value = "id") String targetUserId
+    ) {
+        // Create User
+        // Set author id
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Follow follow = followRepository.findByUserId(currentUser.getId());
+
+        // TargetUser
+        User targetUser = userRepository.findById(targetUserId);
+
+        //
+        List<User> followingList = follow.getFollowing();
+        followingList.remove(targetUser);
+
+        // Save to DB
+        followRepository.save(follow);
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("message", "You are following " + targetUser.getName());
+            }
+        }), HttpStatus.OK);
+    }
+
+
+    private HttpHeaders getHeaders(Page<?> page) {
+        return new HttpHeaders() {
+            {
+                add("Access-Control-Expose-Headers", "Content-Range");
+                add("Content-Range", String.valueOf(page.getTotalElements()));
+            }
+        };
+    }
 }
