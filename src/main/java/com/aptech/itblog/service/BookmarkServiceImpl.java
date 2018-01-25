@@ -30,6 +30,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         Bookmark bookmark = bookmarkRepository.findByUserId(user.getId());
 
+        if (bookmark == null) return null;
+
         List<Post> posts = bookmark.getPosts();
 
         // Change to post page
@@ -59,7 +61,7 @@ public class BookmarkServiceImpl implements BookmarkService {
             messageArr[0] = "You removed " + targetPostId + " from bookmarks.";
         } else {
             postList.add(targetPost);
-            messageArr[0] = "You added " + targetPostId + " from bookmarks.";
+            messageArr[0] = "You added " + targetPostId + " into bookmarks.";
         }
 
         // Save to DB

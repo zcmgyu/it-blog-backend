@@ -268,8 +268,7 @@ public class UserController {
 
 
     @GetMapping(value = USERS_SELF_BOOKMARK)
-    public ResponseEntity<?> getBookmarks(
-            @PathVariable(value = "id") String targetPostId,
+    public ResponseEntity<?> getSelfBookmarks(
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "25") Integer size
     ) {
@@ -278,11 +277,21 @@ public class UserController {
 
         Page<Post> postPage = bookmarkService.getBookmarks(pageable);
 
+        if (postPage == null)  {
+            return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+                {
+                    put("data", new ArrayList<>());
+                }
+            }), HttpStatus.OK);
+        }
+
+        Page<PostDTO> postDTOPage = postPage.map(post -> postConverter.convertToDto(post));
+
         HttpHeaders headers = getHeaders(postPage);
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("data", postPage);
+                put("data", postDTOPage.getContent());
             }
         }), headers, HttpStatus.OK);
     }

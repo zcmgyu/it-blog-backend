@@ -43,7 +43,8 @@ public class OAuth2ServerConfiguration {
                     .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/users/**").permitAll()
-                    .antMatchers(HttpMethod.PUT,"/api/users/**").authenticated();
+                    .antMatchers(HttpMethod.PUT,"/api/users/**").authenticated()
+                    .antMatchers("/api/self/**").authenticated();
 
 
         }
