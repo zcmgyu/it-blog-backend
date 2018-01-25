@@ -97,5 +97,10 @@ public class DBLoader implements CommandLineRunner {
 //        List<Follow> followFound2 = followRepository.findByFollowingIn(Arrays.asList(new User[]{user2}));
 //        List<Follow> followFound3 = followRepository.findByFollowing(user3);
 //        List<Follow> followFound4 = followRepository.findByFollowing(user2);
+
+//        Pageable pageable = new PageRequest(0, 25);
+//        Page<Post> posts2 = postRepository.findAllByTitleOrRawContentContains("zcmgyu", "zcmgyu", pageable);
+//        Page<Post> posts3 = postRepository.findAllByTitleOrRawContentContains(Arrays.asList(new String[] {"zcmgyu"}), Arrays.asList(new String[] {"zcmgyu"}), pageable);
+
     }
 }

@@ -43,12 +43,6 @@ public class PostController {
      */
     @PostMapping(value = POSTS, headers = "Accept=application/json")
     public ResponseEntity<?> createPost(@Valid @RequestBody Post post) {
-        // Set author id
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Set author
-        post.setAuthor(user);
-
         // Create post
         Post createdPost = postService.createPost(post);
 
