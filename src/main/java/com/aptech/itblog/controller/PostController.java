@@ -1,19 +1,14 @@
 package com.aptech.itblog.controller;
 
-import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.converter.PostConverter;
 import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.PostByCategoryDTO;
-import com.aptech.itblog.model.PostDTO;
 import com.aptech.itblog.model.CommonResponseBody;
-import com.aptech.itblog.repository.CategoryRepository;
-import com.aptech.itblog.repository.PostRepository;
-import com.aptech.itblog.repository.UserRepository;
+import com.aptech.itblog.service.BookmarkService;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,16 +29,13 @@ import static com.aptech.itblog.common.CollectionLink.*;
 @RequestMapping(value = API)
 public class PostController {
     @Autowired
-    private PostService postService;
+    public PostService postService;
 
     @Autowired
-    private PostConverter postConverter;
+    public PostConverter postConverter;
 
     @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    public BookmarkService bookmarkService;
 
     /**
      * Entity to DTO
@@ -188,8 +180,6 @@ public class PostController {
 
     @DeleteMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<?> deletePost(@PathVariable("id") String postId) {
-
-
         boolean result = postService.deletePost(postId);
 
         if (result) {
@@ -199,5 +189,16 @@ public class PostController {
         }
     }
 
+    @PutMapping(value = POSTS_ID_BOOKMARK)
+    public ResponseEntity<?> toggleBookmark(
+            @PathVariable(value = "id") String targetPostId
+    ) {
+        String message = bookmarkService.toggleBookmark(targetPostId);
 
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("message", message);
+            }
+        }), HttpStatus.OK);
+    }
 }

@@ -1,8 +1,5 @@
 package com.aptech.itblog.model;
 
-import com.aptech.itblog.collection.Category;
-import com.aptech.itblog.collection.Post;
-
 import java.util.List;
 
 public class PostByCategoryDTO {

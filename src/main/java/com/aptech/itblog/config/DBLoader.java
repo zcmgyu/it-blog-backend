@@ -1,15 +1,10 @@
 package com.aptech.itblog.config;
 
-import com.aptech.itblog.collection.Follow;
-import com.aptech.itblog.collection.User;
 import com.aptech.itblog.repository.*;
 import com.aptech.itblog.service.GAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 public class DBLoader implements CommandLineRunner {

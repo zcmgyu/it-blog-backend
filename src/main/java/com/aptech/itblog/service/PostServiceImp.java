@@ -1,9 +1,7 @@
 package com.aptech.itblog.service;
 
-import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.model.PostByCategory;
-import com.aptech.itblog.model.TrendViews;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.PostRepository;
 import com.aptech.itblog.repository.PostRepositoryCustom;
@@ -14,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImp implements PostService {

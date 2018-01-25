@@ -2,21 +2,16 @@ package com.aptech.itblog.converter;
 
 import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
-import com.aptech.itblog.collection.User;
 import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.PostByCategoryDTO;
 import com.aptech.itblog.model.PostDTO;
-import com.aptech.itblog.model.UserDTO;
 import com.aptech.itblog.repository.CategoryRepository;
 import com.aptech.itblog.repository.UserRepository;
 import com.aptech.itblog.utils.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 

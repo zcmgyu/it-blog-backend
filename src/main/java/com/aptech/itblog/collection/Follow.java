@@ -24,9 +24,6 @@ public class Follow {
     @DBRef
     private List<User> following;
 
-//    @DBRef
-//    private List<User> followers;
-
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createAt;
@@ -42,12 +39,6 @@ public class Follow {
         this.user = user;
         this.following = following;
     }
-
-    //    public Follow(User user, List<User> following, List<User> followers) {
-//        this.user = user;
-//        this.following = following;
-//        this.followers = followers;
-//    }
 
     // GETTER & SETTER
 

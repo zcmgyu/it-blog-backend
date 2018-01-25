@@ -1,8 +1,6 @@
 package com.aptech.itblog.model;
 
-import com.aptech.itblog.collection.Category;
 import com.aptech.itblog.collection.Post;
-import com.mongodb.DBObject;
 
 import java.util.List;
 

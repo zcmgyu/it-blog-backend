@@ -1,6 +1,5 @@
 package com.aptech.itblog.repository;
 
-import com.aptech.itblog.collection.Trend;
 import com.aptech.itblog.model.TrendViews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

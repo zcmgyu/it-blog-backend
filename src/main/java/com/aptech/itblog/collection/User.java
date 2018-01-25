@@ -65,6 +65,11 @@ public class User implements UserDetails, Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return ((User) obj).getId().equals(this.id);
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }

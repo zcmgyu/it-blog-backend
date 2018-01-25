@@ -3,6 +3,7 @@ package com.aptech.itblog.collection;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,13 +13,15 @@ import java.util.List;
 @Document(collection = "Bookmark")
 @JsonIgnoreProperties(value = {"createdAt"}, allowGetters = true)
 public class Bookmark {
-
     @Id
     private String id;
 
-    private String userId;
+    @NotEmpty
+    @DBRef
+    private User user;
 
-    private List<String> listPostId;
+    @DBRef
+    private List<Post> posts;
 
     @NotEmpty
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -28,12 +31,15 @@ public class Bookmark {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date modifiedAt;
 
-    public Bookmark(String userId, List<String> listPostId, Date createAt, Date modifiedAt) {
-        this.userId = userId;
-        this.listPostId = listPostId;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
+    public Bookmark() {
     }
+
+    public Bookmark(User user, List<Post> posts) {
+        this.user = user;
+        this.posts = posts;
+    }
+
+    // GETTER & SETTER
 
     public String getId() {
         return id;
@@ -43,16 +49,20 @@ public class Bookmark {
         this.id = id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public User getUser() {
+        return user;
     }
 
-    public List<String> getListPostId() {
-        return listPostId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setListPostId(List<String> listPostId) {
-        this.listPostId = listPostId;
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     public Date getCreateAt() {

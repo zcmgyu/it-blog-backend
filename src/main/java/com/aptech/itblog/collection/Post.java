@@ -56,6 +56,11 @@ public class Post {
         this.shortContent = shortContent;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return ((Post) obj).getId().equals(this.id);
+    }
+
     public String getId() {
         return id;
     }

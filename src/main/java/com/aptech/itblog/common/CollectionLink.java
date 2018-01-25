@@ -6,8 +6,8 @@ public class CollectionLink {
     public static final String POSTS = "/posts";
 
     public static final String POSTS_TOP4_TYPE = "/posts/top4/{type}";
-    public static final String POSTS_TYPE = "/posts/{type}";
     public static final String POSTS_ID = "/posts/{id}";
+    public static final String POSTS_ID_BOOKMARK = "/posts/{id}/bookmark";
 
     public static final String USERS = "/users";
     public static final String USERS_ID = "/users/{id}";
@@ -15,6 +15,7 @@ public class CollectionLink {
     public static final String USERS_ID_FOLLOWING = "/users/{id}/following";
     public static final String USERS_ID_FOLLOWERS = "/users/{id}/followers";
     public static final String USERS_ID_FOLLOW = "/users/{id}/follow";
+    public static final String USERS_SELF_BOOKMARK = "/users/self/bookmark";
 
     public static final String CATEGORIES = "/categories";
     public static final String CATEGORIES_ID = "/categories/{id}";

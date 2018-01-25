@@ -1,6 +1,5 @@
 package com.aptech.itblog.repository;
 
-import com.aptech.itblog.collection.Trend;
 import com.aptech.itblog.model.TrendViews;
 
 import java.util.List;

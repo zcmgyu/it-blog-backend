@@ -1,6 +1,5 @@
 package com.aptech.itblog.controller;
 
-import com.aptech.itblog.collection.Follow;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.converter.PostConverter;
@@ -12,17 +11,17 @@ import com.aptech.itblog.model.UserDTO;
 import com.aptech.itblog.repository.FollowRepository;
 import com.aptech.itblog.repository.RoleRepository;
 import com.aptech.itblog.repository.UserRepository;
+import com.aptech.itblog.service.BookmarkService;
+import com.aptech.itblog.service.FollowService;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -31,7 +30,6 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 
 import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.aptech.itblog.common.CollectionLink.*;
 
@@ -40,19 +38,10 @@ import static com.aptech.itblog.common.CollectionLink.*;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     UserDetailsService userDetailsService; //Service which will do all data retrieval/manipulation work
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    FollowRepository followRepository;
 
     @Autowired
     PostService postService;
@@ -62,6 +51,12 @@ public class UserController {
 
     @Autowired
     UserConverter userConverter;
+
+    @Autowired
+    FollowService followService;
+
+    @Autowired
+    BookmarkService bookmarkService;
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public void handleMissingParams(MissingServletRequestParameterException ex) {
@@ -213,26 +208,21 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "25") Integer size
     ) {
 
+        Pageable pageable = new PageRequest(page, size);
 
-        Follow follow = followRepository.findByUserId(userId);
+        Page<User> followingPage = followService.getFollowing(userId, pageable);
 
-        if (follow == null) {
-            return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+        if (followingPage == null) {
+            return new ResponseEntity<>(new CommonResponseBody("NotFound", 404, new LinkedHashMap() {
                 {
                     put("message", "There are no data.");
                 }
             }), HttpStatus.OK);
         }
-
-        List<User> followingList = follow.getFollowing();
-
-        // Create pageable
-        Pageable pageable = new PageRequest(page, size);
-        Page<User> followingPage = new PageImpl<>(followingList, pageable, followingList.size());
-
+        // Convert to DTO
         Page<UserDTO> userDTOPage = followingPage
                 .map(user -> userConverter.convertToDto(user));
-
+        // Set header
         HttpHeaders headers = getHeaders(userDTOPage);
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
@@ -250,18 +240,11 @@ public class UserController {
     ) {
         // Create pageable
         Pageable pageable = new PageRequest(page, size);
-        // Create User
-        User user = new User();
-        user.setId(userId);
-
         // Pagination
-        Page<Follow> followerPage = followRepository.findAllByFollowing(user, pageable);
-
-        // Follower list
-        Page<User> userPage = followerPage.map(follow -> follow.getUser());
+        Page<User> followerPage = followService.getFollowers(userId, pageable);
 
         // Convert to DTO
-        Page<UserDTO> userDTOPage = userPage.map(user1 -> userConverter.convertToDto(user1));
+        Page<UserDTO> userDTOPage = followerPage.map(user1 -> userConverter.convertToDto(user1));
 
         HttpHeaders headers = getHeaders(userDTOPage);
 
@@ -274,65 +257,38 @@ public class UserController {
 
 
     @PutMapping(value = USERS_ID_FOLLOW)
-    public ResponseEntity<?> followUser(
+    public ResponseEntity<?> toggleFollowUser(
             @PathVariable(value = "id") String targetUserId
     ) {
-        // Create User
-        // Set author id
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Follow follow = followRepository.findByUserId(currentUser.getId());
-
-        // TargetUser
-        User targetUser = userRepository.findById(targetUserId);
-
-        if (follow == null) {
-            follow = new Follow(targetUser, new ArrayList() {
-                {
-                    add(targetUser);
-                }
-            });
-        } else {
-            // Pagination
-            List<User> followingList = follow.getFollowing();
-            followingList.add(targetUser);
-        }
-
-        // Save to DB
-        followRepository.save(follow);
+        String message = followService.toggleFollow(targetUserId);
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("message", "You are following " + targetUser.getName());
+                put("message", message);
             }
         }), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = USERS_ID_FOLLOW)
-    public ResponseEntity<?> unfollowUser(
-            @PathVariable(value = "id") String targetUserId
+
+    @GetMapping(value = USERS_SELF_BOOKMARK)
+    public ResponseEntity<?> getBookmarks(
+            @PathVariable(value = "id") String targetPostId,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "25") Integer size
     ) {
-        // Create User
-        // Set author id
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Follow follow = followRepository.findByUserId(currentUser.getId());
+        // Create pagable
+        Pageable pageable = new PageRequest(page, size);
 
-        // TargetUser
-        User targetUser = userRepository.findById(targetUserId);
+        Page<Post> postPage = bookmarkService.getBookmarks(pageable);
 
-        //
-        List<User> followingList = follow.getFollowing();
-        followingList.remove(targetUser);
-
-        // Save to DB
-        followRepository.save(follow);
+        HttpHeaders headers = getHeaders(postPage);
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {
-                put("message", "You are following " + targetUser.getName());
+                put("data", postPage);
             }
-        }), HttpStatus.OK);
+        }), headers, HttpStatus.OK);
     }
-
 
     private HttpHeaders getHeaders(Page<?> page) {
         return new HttpHeaders() {
