@@ -7,6 +7,7 @@ import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.PostByCategoryDTO;
 import com.aptech.itblog.model.CommonResponseBody;
 import com.aptech.itblog.service.BookmarkService;
+import com.aptech.itblog.service.LoveService;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class PostController {
 
     @Autowired
     public BookmarkService bookmarkService;
+
+    @Autowired
+    public LoveService loveService;
 
     /**
      * Entity to DTO
@@ -116,10 +120,6 @@ public class PostController {
         }), headers, HttpStatus.OK);
     }
 
-
-
-
-
     @GetMapping(value = POSTS_ID, headers = "Accept=application/json")
     public ResponseEntity<Post> getPostByID(@PathVariable("id") String postId) {
 
@@ -195,4 +195,19 @@ public class PostController {
             }
         }), HttpStatus.OK);
     }
+
+    @PutMapping(value = POSTS_ID_LOVE)
+    public ResponseEntity<?> toggleLove(
+            @PathVariable(value = "id") String targetPostId
+    ) {
+        String message = loveService.toggleBookmark(targetPostId);
+
+        return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
+            {
+                put("message", message);
+            }
+        }), HttpStatus.OK);
+    }
+
+
 }

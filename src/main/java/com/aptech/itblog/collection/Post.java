@@ -33,6 +33,9 @@ public class Post {
 
     private List<String> tags;
 
+    @DBRef
+    private List<User> loved;
+
     private boolean status;
 
     private boolean publicPost;
@@ -46,14 +49,17 @@ public class Post {
     public Post() {
     }
 
-    public Post(User author, String title, Object content, boolean publicPost, String categoryId, List<String> tags, String rawContent) {
+    public Post(User author, String title, Object content, String rawContent, String image, String categoryId, List<String> tags, List<User> loved, boolean status, boolean publicPost) {
         this.author = author;
         this.title = title;
         this.content = content;
-        this.publicPost = publicPost;
+        this.rawContent = rawContent;
+        this.image = image;
         this.categoryId = categoryId;
         this.tags = tags;
-        this.rawContent = rawContent;
+        this.loved = loved;
+        this.status = status;
+        this.publicPost = publicPost;
     }
 
     @Override
@@ -155,5 +161,17 @@ public class Post {
 
     public void getRawContent(String rawContent) {
         this.rawContent = rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
+    }
+
+    public List<User> getLoved() {
+        return loved;
+    }
+
+    public void setLoved(List<User> loved) {
+        this.loved = loved;
     }
 }

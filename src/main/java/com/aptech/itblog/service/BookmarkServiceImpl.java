@@ -63,7 +63,7 @@ public class BookmarkServiceImpl implements BookmarkService {
             postList.add(targetPost);
             messageArr[0] = "You added " + targetPostId + " into bookmarks.";
         }
-
+        bookmark.setPosts(postList);
         // Save to DB
         bookmarkRepository.save(bookmark);
         return messageArr[0];

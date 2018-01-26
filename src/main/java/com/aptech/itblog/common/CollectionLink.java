@@ -9,6 +9,7 @@ public class CollectionLink {
     public static final String POSTS_TOP4_TYPE = "/posts/top4/{type}";
     public static final String POSTS_ID = "/posts/{id}";
     public static final String POSTS_ID_BOOKMARK = "/posts/{id}/bookmark";
+    public static final String POSTS_ID_LOVE = "/posts/{id}/love";
 
     public static final String USERS = "/users";
     public static final String USERS_ID = "/users/{id}";

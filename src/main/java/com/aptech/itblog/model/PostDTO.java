@@ -1,6 +1,9 @@
 package com.aptech.itblog.model;
 
+import com.aptech.itblog.collection.User;
+
 import java.util.Date;
+import java.util.List;
 
 public class PostDTO {
     private String id;
@@ -15,19 +18,21 @@ public class PostDTO {
 
     private UserDTO author;
 
+    private List<UserDTO> loved;
+
     private Date createAt;
 
     private Date modifiedAt;
 
     public PostDTO() {}
 
-    public PostDTO(String id, String title, String rawContent, String transliterated, String image, UserDTO author) {
-        this.id = id;
+    public PostDTO(String title, String rawContent, String transliterated, String image, UserDTO author, List<UserDTO> loved) {
         this.title = title;
         this.rawContent = rawContent;
         this.transliterated = transliterated;
         this.image = image;
         this.author = author;
+        this.loved = loved;
     }
 
     public String getId() {
@@ -76,6 +81,14 @@ public class PostDTO {
 
     public void setAuthor(UserDTO author) {
         this.author = author;
+    }
+
+    public List<UserDTO> getLoved() {
+        return loved;
+    }
+
+    public void setLoved(List<UserDTO> loved) {
+        this.loved = loved;
     }
 
     public Date getCreateAt() {
