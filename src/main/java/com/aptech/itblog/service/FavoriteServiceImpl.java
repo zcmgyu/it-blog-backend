@@ -1,6 +1,5 @@
 package com.aptech.itblog.service;
 
-import com.aptech.itblog.collection.Bookmark;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.repository.PostRepository;
@@ -14,17 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class LoveServiceImpl implements LoveService {
+public class FavoriteServiceImpl implements FavoriteService {
     @Autowired
     PostRepository postRepository;
 
     @Override
-    public Page<Post> getBookmarks(Pageable pageable) {
+    public Page<Post> getFavorites(Pageable pageable) {
         return null;
     }
 
     @Override
-    public String toggleBookmark(String targetPostId) {
+    public String toggleFavorite(String targetPostId) {
         // Create User
         // Set author id
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -32,22 +31,22 @@ public class LoveServiceImpl implements LoveService {
         // Target Post
         Post targetPost = postRepository.findById(targetPostId);
 
-        List<User> lovedList = targetPost.getLoved();
+        List<User> favoriteList = targetPost.getFavorite();
 
-        if (lovedList == null) lovedList = new ArrayList<>();
+        if (favoriteList == null) favoriteList = new ArrayList<>();
 
         String[] messageArr = new String[1];
 
         String username = currentUser.getUsername();
         // Toggle bookmark
-        if (lovedList.contains(currentUser)) {
-            lovedList.remove(currentUser);
-            messageArr[0] = "You removed " + username + " from loved.";
+        if (favoriteList.contains(currentUser)) {
+            favoriteList.remove(currentUser);
+            messageArr[0] = "You removed " + username + " from favorite.";
         } else {
-            lovedList.add(currentUser);
-            messageArr[0] = "You added " + username + " into loved.";
+            favoriteList.add(currentUser);
+            messageArr[0] = "You added " + username + " into favorite.";
         }
-        targetPost.setLoved(lovedList);
+        targetPost.setFavorite(favoriteList);
         // Save to DB
         postRepository.save(targetPost);
         return messageArr[0];

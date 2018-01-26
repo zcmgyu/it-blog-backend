@@ -18,7 +18,7 @@ public class PostDTO {
 
     private UserDTO author;
 
-    private List<UserDTO> loved;
+    private List<UserDTO> favorite;
 
     private Date createAt;
 
@@ -26,13 +26,13 @@ public class PostDTO {
 
     public PostDTO() {}
 
-    public PostDTO(String title, String rawContent, String transliterated, String image, UserDTO author, List<UserDTO> loved) {
+    public PostDTO(String title, String rawContent, String transliterated, String image, UserDTO author, List<UserDTO> favorite) {
         this.title = title;
         this.rawContent = rawContent;
         this.transliterated = transliterated;
         this.image = image;
         this.author = author;
-        this.loved = loved;
+        this.favorite = favorite;
     }
 
     public String getId() {
@@ -83,12 +83,12 @@ public class PostDTO {
         this.author = author;
     }
 
-    public List<UserDTO> getLoved() {
-        return loved;
+    public List<UserDTO> getFavorite() {
+        return favorite;
     }
 
-    public void setLoved(List<UserDTO> loved) {
-        this.loved = loved;
+    public void setFavorite(List<UserDTO> favorite) {
+        this.favorite = favorite;
     }
 
     public Date getCreateAt() {

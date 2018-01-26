@@ -7,7 +7,7 @@ import com.aptech.itblog.model.PostByCategory;
 import com.aptech.itblog.model.PostByCategoryDTO;
 import com.aptech.itblog.model.CommonResponseBody;
 import com.aptech.itblog.service.BookmarkService;
-import com.aptech.itblog.service.LoveService;
+import com.aptech.itblog.service.FavoriteService;
 import com.aptech.itblog.service.PostService;
 import com.aptech.itblog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class PostController {
     public BookmarkService bookmarkService;
 
     @Autowired
-    public LoveService loveService;
+    public FavoriteService favoriteService;
 
     /**
      * Entity to DTO
@@ -196,11 +196,11 @@ public class PostController {
         }), HttpStatus.OK);
     }
 
-    @PutMapping(value = POSTS_ID_LOVE)
-    public ResponseEntity<?> toggleLove(
+    @PutMapping(value = POSTS_ID_FAVORITE)
+    public ResponseEntity<?> toggleFavorite(
             @PathVariable(value = "id") String targetPostId
     ) {
-        String message = loveService.toggleBookmark(targetPostId);
+        String message = favoriteService.toggleFavorite(targetPostId);
 
         return new ResponseEntity<>(new CommonResponseBody("OK", 200, new LinkedHashMap() {
             {

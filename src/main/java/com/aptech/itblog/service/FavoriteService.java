@@ -4,8 +4,8 @@ import com.aptech.itblog.collection.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface LoveService {
-    Page<Post> getBookmarks(Pageable pageable);
+public interface FavoriteService {
+    Page<Post> getFavorites(Pageable pageable);
 
-    String toggleBookmark(String targetPost);
+    String toggleFavorite(String targetPost);
 }

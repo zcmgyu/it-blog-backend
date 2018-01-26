@@ -34,7 +34,7 @@ public class Post {
     private List<String> tags;
 
     @DBRef
-    private List<User> loved;
+    private List<User> favorite;
 
     private boolean status;
 
@@ -49,7 +49,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(User author, String title, Object content, String rawContent, String image, String categoryId, List<String> tags, List<User> loved, boolean status, boolean publicPost) {
+    public Post(User author, String title, Object content, String rawContent, String image, String categoryId, List<String> tags, List<User> favorite, boolean status, boolean publicPost) {
         this.author = author;
         this.title = title;
         this.content = content;
@@ -57,7 +57,7 @@ public class Post {
         this.image = image;
         this.categoryId = categoryId;
         this.tags = tags;
-        this.loved = loved;
+        this.favorite = favorite;
         this.status = status;
         this.publicPost = publicPost;
     }
@@ -167,11 +167,11 @@ public class Post {
         this.rawContent = rawContent;
     }
 
-    public List<User> getLoved() {
-        return loved;
+    public List<User> getFavorite() {
+        return favorite;
     }
 
-    public void setLoved(List<User> loved) {
-        this.loved = loved;
+    public void setFavorite(List<User> favorite) {
+        this.favorite = favorite;
     }
 }
