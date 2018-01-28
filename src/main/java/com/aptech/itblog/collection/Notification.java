@@ -24,7 +24,7 @@ public class Notification {
     private String type;
 
     @NotEmpty
-    private String targetUserId;
+    private User targetUser;
 
     @NotEmpty
     private String url;
@@ -40,10 +40,10 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(User user, String type, String targetUserId, String url, Date createAt, Date modifiedAt) {
+    public Notification(User user, String type, User targetUser, String url, Date createAt, Date modifiedAt) {
         this.user = user;
         this.type = type;
-        this.targetUserId = targetUserId;
+        this.targetUser = targetUser;
         this.url = url;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
@@ -73,12 +73,12 @@ public class Notification {
         this.type = type;
     }
 
-    public String getTargetUserId() {
-        return targetUserId;
+    public User getTargetUser() {
+        return targetUser;
     }
 
-    public void setTargetUserId(String targetUserId) {
-        this.targetUserId = targetUserId;
+    public void setTargetUser(User targetUser) {
+        this.targetUser = targetUser;
     }
 
     public String getUrl() {

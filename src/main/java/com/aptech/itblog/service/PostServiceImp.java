@@ -94,6 +94,9 @@ public class PostServiceImp implements PostService {
         // Set category
         currentPost.setCategoryId(post.getCategoryId());
 
+        // Set raw content
+        currentPost.setRawContent(post.getRawContent());
+
         // Get first image
         String image = getFirstImage(blocks);
         currentPost.setImage(image);

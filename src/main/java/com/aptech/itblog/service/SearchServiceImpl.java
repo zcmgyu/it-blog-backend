@@ -7,6 +7,7 @@ import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -20,11 +21,11 @@ public class SearchServiceImpl implements SearchService {
     UserRepository userRepository;
 
     @Override
-    public LinkedHashMap<String, ?> search(String search, Pageable pageable) {
+    public LinkedHashMap<String, Page> search(String search, Pageable pageable) {
         Page<Post> postPage = postRepository.findAllByTitleOrRawContentContains(search, search, pageable);
         Page<User> userPage = userRepository.findAllByUsernameOrNameOrEmailContains(search, search, search, pageable);
 
-        LinkedHashMap<String, ?> searchMap = new LinkedHashMap() {
+        LinkedHashMap<String, Page> searchMap = new LinkedHashMap() {
             {
                 put("posts", postPage);
                 put("users", userPage);
