@@ -38,8 +38,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<PostByCategory> getTrendPostGroupByCategory() {
         Aggregation aggregation = newAggregation(
-                sort(Sort.Direction.DESC, "post.categoryId").and(Sort.Direction.DESC, "views"),
-                group("post.categoryId")
+                sort(Sort.Direction.DESC, "categoryId").and(Sort.Direction.DESC, "views"),
+                group("categoryId")
                         .push(Aggregation.ROOT.concat(".post")).as("posts"),
                 project().and("posts").slice(4).as("top4")
         );

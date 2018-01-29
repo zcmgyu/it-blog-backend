@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class GAService {
@@ -51,7 +52,7 @@ public class GAService {
         service = initializeAnalyticsReporting();
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 1200000)
     public void schedule() throws IOException, ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         log.info("The time is now {}", dateFormat.format(new Date()));
@@ -150,6 +151,7 @@ public class GAService {
      * @param response An Analytics Reporting API V4 response.
      */
     private void storeIntoDB(GetReportsResponse response) throws ParseException {
+        trendRepository.deleteAll();
         for (Report report : response.getReports()) {
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
@@ -212,14 +214,26 @@ public class GAService {
                     continue;
                 }
                 // Add trend to list
-                trends.add(new Trend(title, post, views, activeDate));
+                Trend trend = trendRepository.findByPostId(post.getId());
+                if (trend == null) {
+                    trend = new Trend(title, post, views, post.getCategoryId(), activeDate);
+                } else {
+                    trend.setTitle(title);
+                    long previousViews = trend.getViews();
+                    trend.setViews(previousViews + views);
+                    trend.setActiveDate(activeDate);
+                    trend.setPost(post);
+                    trend.setCategoryId(post.getCategoryId());
+                }
+                trendRepository.save(trend);
                 System.out.println("====================================================================================");
+                System.out.println("trend_id: " + trend.getId());
+                System.out.println("post: " + trend.getPost().getId());
                 System.out.println("====================================================================================");
 
             }
-            trendRepository.deleteAll();
             // Save list trend records to DB
-            trendRepository.save(trends);
+//            trendRepository.save(trends);
         }
     }
 

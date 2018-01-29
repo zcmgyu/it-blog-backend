@@ -12,6 +12,5 @@ public interface TrendRepository extends MongoRepository<Trend, String> {
 
     List<Trend> findAllByActiveDateAfter(Date date);
     List<Trend> findAllByActiveDateBefore(Date date);
-
-
+    Trend findByPostId(String postId);
 }

@@ -1,6 +1,7 @@
 package com.aptech.itblog.collection;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -14,6 +15,9 @@ public class Trend {
 
     private String title;
 
+    private String categoryId;
+
+    @DBRef
     private Post post;
 
     private long views;
@@ -21,11 +25,12 @@ public class Trend {
     public Trend() {
     }
 
-    public Trend(String title, Post post, long views, Date activeDate) {
+    public Trend(String title, Post post, long views, String categoryId, Date activeDate) {
+        this.activeDate = activeDate;
         this.title = title;
+        this.categoryId = categoryId;
         this.post = post;
         this.views = views;
-        this.activeDate = activeDate;
     }
 
     // GETTER AND SETTER
@@ -55,7 +60,7 @@ public class Trend {
         this.title = title;
     }
 
-    public Post getPostId() {
+    public Post getPost() {
         return post;
     }
 
@@ -69,5 +74,13 @@ public class Trend {
 
     public void setViews(long views) {
         this.views = views;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 }
