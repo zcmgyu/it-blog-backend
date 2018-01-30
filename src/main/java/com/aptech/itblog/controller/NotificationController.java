@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import static com.aptech.itblog.common.CollectionLink.API;
+
 
 @RestController
+@RequestMapping(API)
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;

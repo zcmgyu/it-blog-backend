@@ -1,12 +1,25 @@
 package com.aptech.itblog.controller;
 
+import com.aptech.itblog.collection.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import static com.aptech.itblog.common.CollectionLink.API;
 
 @RestController
 @RequestMapping(API)
 public class AuthController {
+    @GetMapping(value = "/auth/roles")
+    @ResponseBody
+    public ResponseEntity<?> register() throws MissingServletRequestPartException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return new ResponseEntity<Object>(auth.getAuthorities(), HttpStatus.OK);
+    }
+
 //    @Autowired
 //    UserDetailsService userDetailsService; //Service which will do all data retrieval/manipulation work
 //

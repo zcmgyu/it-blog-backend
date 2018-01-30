@@ -3,6 +3,7 @@ package com.aptech.itblog.collection;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +25,15 @@ public class User implements UserDetails, Serializable {
     private String id;
 
     @NotNull
+    @TextIndexed(weight = 3)
     private String name;
 
     @NotNull
+    @TextIndexed(weight = 2)
     private String username;
 
     @NotNull
+    @TextIndexed
     private String email;
 
     @NotNull

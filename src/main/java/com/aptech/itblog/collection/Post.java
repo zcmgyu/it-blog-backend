@@ -2,6 +2,7 @@ package com.aptech.itblog.collection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,11 +20,13 @@ public class Post {
     @DBRef
     private User author;
 
+    @TextIndexed(weight = 2)
     private String title;
 
     @NotNull
     private Object content;
 
+    @TextIndexed
     private String rawContent;
 
     private String image;

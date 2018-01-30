@@ -3,6 +3,7 @@ package com.aptech.itblog.repository;
 import com.aptech.itblog.collection.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface PostRepository extends MongoRepository<Post, String> {
@@ -13,4 +14,6 @@ public interface PostRepository extends MongoRepository<Post, String> {
     Page<Post> findAllByTitleOrRawContentContains(String search1, String search2, Pageable pageable);
 
     Page<Post> findAllByTagsContains(String tag, Pageable pageable);
+
+    Page<Post> findAllBy(TextCriteria criteria, Pageable pageable);
 }

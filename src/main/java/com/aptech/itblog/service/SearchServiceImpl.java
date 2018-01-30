@@ -7,7 +7,7 @@ import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -22,8 +22,9 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public LinkedHashMap<String, Page> search(String search, Pageable pageable) {
-        Page<Post> postPage = postRepository.findAllByTitleOrRawContentContains(search, search, pageable);
-        Page<User> userPage = userRepository.findAllByUsernameOrNameOrEmailContains(search, search, search, pageable);
+        TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(search);
+        Page<Post> postPage = postRepository.findAllBy(criteria, pageable);
+        Page<User> userPage = userRepository.findAllBy(criteria, pageable);
 
         LinkedHashMap<String, Page> searchMap = new LinkedHashMap() {
             {
