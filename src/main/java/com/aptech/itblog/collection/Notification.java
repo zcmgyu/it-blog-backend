@@ -21,10 +21,11 @@ public class Notification {
     private User user;
 
     @NotEmpty
-    private String type;
+    private String message;
 
     @NotEmpty
-    private User targetUser;
+    @DBRef
+    private User author;
 
     @NotEmpty
     private String url;
@@ -40,10 +41,10 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(User user, String type, User targetUser, String url, Date createAt, Date modifiedAt) {
+    public Notification(User user, String message, User author, String url, Date createAt, Date modifiedAt) {
         this.user = user;
-        this.type = type;
-        this.targetUser = targetUser;
+        this.message = message;
+        this.author = author;
         this.url = url;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
@@ -65,20 +66,20 @@ public class Notification {
         this.user = user;
     }
 
-    public String getType() {
-        return type;
+    public String getMessage() {
+        return message;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public User getTargetUser() {
-        return targetUser;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setTargetUser(User targetUser) {
-        this.targetUser = targetUser;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public String getUrl() {

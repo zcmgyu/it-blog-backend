@@ -39,14 +39,15 @@ public class OAuth2ServerConfiguration {
             http
                     .authorizeRequests()
                     .antMatchers("/ws").authenticated()
-                    .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
-                    .antMatchers(HttpMethod.PUT,"/api/posts").authenticated()
+                    .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                    .antMatchers(HttpMethod.PUT, "/api/posts").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                    .antMatchers(HttpMethod.GET,"/api/users").permitAll()
-                    .antMatchers(HttpMethod.GET,"/api/users/**").permitAll()
-                    .antMatchers(HttpMethod.PUT,"/api/users/**").authenticated()
+                    .antMatchers(HttpMethod.GET, "/api/users").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+                    .antMatchers(HttpMethod.PUT, "/api/users/**").authenticated()
                     .antMatchers("/api/self/**").authenticated()
-                    .antMatchers("/api/auth/**").authenticated();
+                    .antMatchers("/api/auth/**").authenticated()
+                    .antMatchers("/api/notifications").authenticated();
 
 
         }

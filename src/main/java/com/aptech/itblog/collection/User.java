@@ -18,7 +18,6 @@ import java.util.List;
 // TODO: REFERENCE
 // TODO: https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations
 @Document(collection = "User")
-@Configurable
 public class User implements UserDetails, Serializable {
 
     @Id

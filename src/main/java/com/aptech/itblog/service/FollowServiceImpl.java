@@ -1,8 +1,8 @@
 package com.aptech.itblog.service;
 
 import com.aptech.itblog.collection.Follow;
+import com.aptech.itblog.collection.Notification;
 import com.aptech.itblog.collection.User;
-import com.aptech.itblog.converter.UserConverter;
 import com.aptech.itblog.repository.FollowRepository;
 import com.aptech.itblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +13,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class FollowServiceImpl implements FollowService {
     @Autowired
-    private FollowRepository followRepository;
+    FollowRepository followRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
-    private UserConverter userConverter;
+    NotificationService notificationService;
 
     @Override
     public String toggleFollow(String targetUserId) {
@@ -42,14 +43,20 @@ public class FollowServiceImpl implements FollowService {
         List<User> followingList = follow.getFollowing();
 
         String[] messageArr = new String[1];
-        String username = targetUser.getUsername();
+        String targetUsername = targetUser.getUsername();
         // Toggle follow
         if (followingList.contains(targetUser)) {
             followingList.remove(targetUser);
-            messageArr[0] = "You removed follow " + username;
+            messageArr[0] = "You removed follow " + targetUsername;
         } else {
             followingList.add(targetUser);
-            messageArr[0] = "You are following " + username;
+            messageArr[0] = "You are following " + targetUsername;
+            // Send notification
+            String nofityMessage = currentUser.getUsername() + " is following you";
+            Notification notification = new Notification(targetUser, nofityMessage, currentUser, null, new Date(), null);
+
+            // Send to target user
+            notificationService.notify(notification, targetUsername);
         }
 
         // Save to DB

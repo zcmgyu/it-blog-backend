@@ -1,6 +1,7 @@
 package com.aptech.itblog.service;
 
 import com.aptech.itblog.collection.Bookmark;
+import com.aptech.itblog.collection.Notification;
 import com.aptech.itblog.collection.Post;
 import com.aptech.itblog.collection.User;
 import com.aptech.itblog.repository.BookmarkRepository;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
